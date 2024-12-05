@@ -14,8 +14,8 @@
     <div id="distance">??</div>
 
     <script>
-        const targetLat = {{ target_lat }};
-        const targetLon = {{ target_lon }};
+        const targetLat = { target_lat };
+        const targetLon = { target_lon };
 
         // Function to calculate distance using Haversine formula
         function calculateDistance(lat1, lon1, lat2, lon2) {
@@ -26,7 +26,7 @@
                       Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
                       Math.sin(dLon / 2) * Math.sin(dLon / 2);
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-            const distancdInKM = R*c;
+            const distanceInKM = R*c;
             return distanceInKM * 3280.84 // converts to feet
         }
 
@@ -36,7 +36,8 @@
                     const userLat = position.coords.latitude;
                     const userLon = position.coords.longitude;
                     const distance = calculateDistance(userLat, userLon, targetLat, targetLon);
-                    document.getElementById('distance').textContent = `${distance.toFixed(2)} km`;
+                    // document.getElementById('distance').textContent = `${distance.toFixed(2)} km`;
+                    document.getElementById('distance').textContent = `${distance.toFixed(2)}`;
                 }, error => {
                     document.getElementById('distance').textContent = "F";
                 });
