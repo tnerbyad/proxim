@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proximity Game</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        #distance { font-size: 16em; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1></h1>
+    <div id="distance">??</div>
+
+    <script>
+        const targetLat = {{ target_lat }};
+        const targetLon = {{ target_lon }};
+
+        // Function to calculate distance using Haversine formula
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Radius of the Earth in km
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            const distancdInKM = R*c;
+            return distanceInKM * 3280.84 // converts to feet
+        }
+
+        function updateDistance() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    const userLat = position.coords.latitude;
+                    const userLon = position.coords.longitude;
+                    const distance = calculateDistance(userLat, userLon, targetLat, targetLon);
+                    document.getElementById('distance').textContent = `${distance.toFixed(2)} km`;
+                }, error => {
+                    document.getElementById('distance').textContent = "xxxxx";
+                });
+            } else {
+                document.getElementById('distance').textContent = "Geolocation not supported.";
+            }
+        }
+        updateDistance();
+        setInterval(updateDistance, 1000); // Update every second
+    </script>
+</body>
+</html>
