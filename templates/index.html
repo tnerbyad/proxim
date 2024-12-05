@@ -38,7 +38,7 @@
                     const distance = calculateDistance(userLat, userLon, targetLat, targetLon);
                     document.getElementById('distance').textContent = `${distance.toFixed(2)} km`;
                 }, error => {
-                    document.getElementById('distance').textContent = "xxxxx";
+                    document.getElementById('distance').textContent = "F";
                 });
             } else {
                 document.getElementById('distance').textContent = "Geolocation not supported.";
