@@ -7,16 +7,8 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <p>Lat: {{ location.lat }}</p>
-    <p>Lon: {{ location.lon }}</p>
-    <p id="distance_display"></p>
-    <p id="user_lat"></p>
-    <p id="user_lon"></p>
-
-    <p id="_lat1"></p>
-    <p id="_lon1"></p>
-    <p id="_lat2"></p>
-    <p id="_lon2"></p>
+    <p id="dist"></p>
+    <p id="lat"></p>, <p id="lon"></p>
 
     <script>
         const _location = {{ location | tojson }};
@@ -28,10 +20,6 @@
         const secondClue = _location.second_clue;
 
         function calculateDistance(lat1, lon1, lat2, lon2) {
-            document.getElementById("_lat1").innerText = lat1;
-            document.getElementById("_lon1").innerText = lon1;
-            document.getElementById("_lat2").innerText = lat2;
-            document.getElementById("_lon2").innerText = lon2;
 
             const R = 20925524.9;
             const dLat = (lat2 - lat1) * (Math.PI / 180);
@@ -56,9 +44,9 @@
                         const userLon = position.coords.longitude;
                         const distance = calculateDistance(userLat, userLon, targetLat, targetLon);
 
-                        document.getElementById("user_lat").innerText = userLat;
-                        document.getElementById("user_lon").innerText = userLon;
-                        document.getElementById("distance_display").innerText = `${distance.toFixed(0)}`;
+                        document.getElementById("lat").innerText = userLat;
+                        document.getElementById("lon").innerText = userLon;
+                        document.getElementById("dist").innerText = `${distance.toFixed(0)}`;
 
                         if (distance <= targetProximity2) {
                             document.getElementById("clue").innerText = secondClue;
