@@ -27,7 +27,6 @@
     </form>
 
     <script>
-
         //const location = {{ location | tojson }};
         const targetLat = location.lat;
         const targetLon = location.lon;
@@ -36,34 +35,8 @@
         const firstClue = location.first_clue;
         const secondClue = location.second_clue;
 
-        if (navigator.geolocation) {
-            navigator.geolocation.watchPosition(position => {
-                const userLat = position.coords.latitude;
-                const userLon = position.coords.longitude;
-
-                document.getElementById("user_lat").value = userLat;
-                document.getElementById("user_lon").value = userLon;
-
-                const distance = calculateDistance(userLat, userLon, targetLat, targetLon);
-                document.getElementById("distance").innerText = `Distance: ${distance} feet`;
-
-                if (distance <= targetProximity1) {
-                    document.getElementById("clue").innerText = firstClue;
-                }
-                if (distance <= targetProximity2) {
-                    document.getElementById("clue").innerText = secondClue;
-                    document.getElementById("magic_input_form").style.display = "block";
-                }
-            }, error => {
-                console.error("Error getting geolocation:", error);
-            }, {
-                enableHighAccuracy: true,  // High accuracy for geolocation
-                timeout: 5000,  // Timeout after 5 seconds
-                maximumAge: 0  // Don't use cached position
-            });
-        }
-
-        function calculateDistance(lat1, lon1, lat2, lon2) {
+        function calculateDistance(lat1, lon1, lat2, lon2)
+        {
             const R = 20925524.9; // Radius of Earth in feet
             const dLat = (lat2 - lat1) * (Math.PI / 180);
             const dLon = (lon2 - lon1) * (Math.PI / 180);
@@ -73,6 +46,45 @@
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
             return Math.round(R * c);
         }
+        function updateDistance()
+        {
+            if (navigator.geolocation)
+            {
+                navigator.geolocation.watchPosition
+                (position => {
+                        const userLat = position.coords.latitude;
+                        const userLon = position.coords.longitude;
+                        const distance = calculateDistance(userLat, userLon, targetLat, targetLon);
+
+                        document.getElementById("user_lat").value = userLat;
+                        document.getElementById("user_lon").value = userLon;
+                        document.getElementById("distance").innerText = `${distance.toFixed(0)}`;
+
+                        if (distance <= targetProximity2)
+                        {
+                            document.getElementById("clue").innerText = secondClue;
+                            document.getElementById("magic_input_form").style.display = "block";
+                        }
+                        else if(distance <= targetProximity1)
+                        {
+                            document.getElementById("clue").innerText = firstClue;
+                        }
+
+                    },
+                    error =>
+                    {
+                        console.error("wazzup", error);
+                    },
+                    {
+                        enableHighAccuracy: true,  // High accuracy for geolocation
+                        timeout: 5000,  // Timeout after 5 seconds
+                        maximumAge: 0  // Don't use cached position
+                    }
+                );
+            }
+        }
+
+        setInterval(updateDistance, 2000); // Update every second
     </script>
 </body>
 </html>
