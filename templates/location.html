@@ -8,8 +8,8 @@
 
     <style>
         #dist-container {
-            width: 2in; /* 2 inches wide */
-            height: 1in; /* 1 inch high */
+            width: 200px; /* 2 inches wide */
+            height: 200px; /* 1 inch high */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -18,12 +18,15 @@
             overflow: hidden; /* Prevents overflow if something goes wrong */
             text-align: center;
             line-height: 1; /* Adjust to avoid extra spacing */
+            border-radius: 50px; /* Optional: Add border radius */
+            background-color: black; /* Optional: Add background color */
+            cursor:pointer;
         }
 
         #dist {
             width: 100%;
             white-space: nowrap; /* Prevents the text from wrapping */
-            border: 2px solid black;
+            color: white;
         }
     </style>
 
@@ -74,13 +77,13 @@
                         const distElement = document.getElementById("dist");
                         // Ensure consistent space for the number
                         if (distance < 10) {
-                            distElement.style.fontSize = "2.5rem"; // Large font size for single digits
+                            distElement.style.fontSize = "24rem"; // Large font size for single digits
                         } else if (distance < 100) {
-                            distElement.style.fontSize = "2rem"; // Slightly smaller for two digits
+                            distElement.style.fontSize = "12rem"; // Slightly smaller for two digits
                         } else if (distance < 1000) {
-                            distElement.style.fontSize = "1.5rem"; // Adjust for three digits
+                            distElement.style.fontSize = "8rem"; // Adjust for three digits
                         } else {
-                            distElement.style.fontSize = "1.2rem"; // Smaller for four or more digits
+                            distElement.style.fontSize = "6rem"; // Smaller for four or more digits
                         }
                         // Update the displayed distance
                         distElement.innerText = distance.toFixed(0); // Rounded to the nearest whole number
