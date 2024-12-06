@@ -23,12 +23,15 @@
         #dist {
             width: 100%;
             white-space: nowrap; /* Prevents the text from wrapping */
+            border: 2px solid black;
         }
     </style>
 
 </head>
 <body>
-    <p id="dist">0</p>
+    <div id="dist-container">
+        <p id="dist">0</p>
+    </div>
     <p id="lat"></p>, <p id="lon"></p>
 
     <script>
@@ -68,7 +71,7 @@
                         document.getElementById("lat").innerText = userLat;
                         document.getElementById("lon").innerText = userLon;
 
-                        const distElement = document.getElementById("dist").innerText;
+                        const distElement = document.getElementById("dist");
                         // Ensure consistent space for the number
                         if (distance < 10) {
                             distElement.style.fontSize = "2.5rem"; // Large font size for single digits
