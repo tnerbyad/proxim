@@ -31,8 +31,8 @@
     <script>
         const targetLat = {{ location.lat }};
         const targetLon = {{ location.lon }};
-        const proximity1 = {{ location.proximity1 }};
-        const proximity2 = {{ location.proximity2 }};
+        const targetProximity1 = {{ location.proximity1 }};
+        const targetProximity2 = {{ location.proximity2 }};
         const firstClue = "{{ location.first_clue }}";
         const secondClue = "{{ location.second_clue }}";
 
@@ -47,10 +47,10 @@
                 const distance = calculateDistance(userLat, userLon, targetLat, targetLon);
                 document.getElementById("distance").innerText = `Distance: ${distance} feet`;
 
-                if (distance <= proximity1) {
+                if (distance <= targetProximity1) {
                     document.getElementById("clue").innerText = firstClue;
                 }
-                if (distance <= proximity2) {
+                if (distance <= targetProximity2) {
                     document.getElementById("clue").innerText = secondClue;
                     document.getElementById("magic_input_form").style.display = "block";
                 }

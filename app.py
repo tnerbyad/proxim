@@ -8,7 +8,7 @@ app.secret_key = "your_secret_key_here"  # Replace with a secure key
 LOCATIONS = [
     {
         "name": "location1",
-        "description": "red building"
+        "description": "red building",
         "lat": 37.7749,
         "lon": -122.4194,
         "proximity1": 500,  # Proximity in feet for the first clue
@@ -20,7 +20,7 @@ LOCATIONS = [
     },
     {
         "name": "location2",
-        "description": "clock tower"
+        "description": "clock tower",
         "lat": 37.8044,
         "lon": -122.2711,
         "proximity1": 400,
@@ -32,7 +32,7 @@ LOCATIONS = [
     },
     {
         "name": "location3",
-        "description": "University Library"
+        "description": "University Library",
         "lat": 37.8715,
         "lon": -122.2730,
         "proximity1": 300,
@@ -44,10 +44,11 @@ LOCATIONS = [
     },
 ]
 
-@app.route("/location<int:location_id>", methods=["GET", "POST"])
+@app.route("/location/<int:location_id>", methods=["GET", "POST"])
 def location_page(location_id):
     if location_id < 1 or location_id > len(LOCATIONS):
-        return "Location not found.", 404
+        #return "Location not found.", 404
+        return redirect('/')
 
     if 'progress' not in session:
         session['progress'] = 0
