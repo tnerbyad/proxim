@@ -34,6 +34,7 @@
 
         function calculateDistance(lat1, lon1, lat2, lon2)
         {
+            alert(lat1 + "|" + lon1 + "|" + lat2 + "|" + lon2);
             const R = 20925524.9; // Radius of Earth in feet
             const dLat = (lat2 - lat1) * (Math.PI / 180);
             const dLon = (lon2 - lon1) * (Math.PI / 180);
@@ -45,7 +46,6 @@
         }
         function updateDistance()
         {
-            alert('hello');
             if (navigator.geolocation)
             {
                 navigator.geolocation.watchPosition
