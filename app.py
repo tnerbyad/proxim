@@ -43,6 +43,9 @@ LOCATIONS = [
         "next": None,
     },
 ]
+@app.route("/")
+def home():
+    return render_template("home.html")
 
 @app.route("/location/<int:location_id>", methods=["GET", "POST"])
 def location_page(location_id):
