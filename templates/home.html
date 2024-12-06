@@ -11,10 +11,7 @@
     <p>Are you ready to begin your journey?</p>
     <a href="/location/1" class="start-button">Start at Location 1</a>
 
-    <img src="{{ url_for('static', filename='./images/buddy_excited.png') }}" alt="Location 1" width="300">
+    <img src="{{ url_for('static', filename='images/buddy_excited.png') }}" alt="Location 1" width="300">
     <img src="{{ url_for('static', filename='images/angry_elf.png') }}" alt="Location 1" width="300">
-    <img src="{{ url_for('static', filename='images/' + location.name + '.jpg') }}"
-         alt="{{ location.name }}"
-         width="300">
 </body>
 </html>
