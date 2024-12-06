@@ -7,11 +7,8 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h1>{{ location.name }}</h1>
-    <p>Progress: {{ location_id }} of {{ total_locations }}</p>
 
-
-    <p id="distance">Calculating distance...</p>
+    <p id="distance"></p>
     <p id="clue"></p>
 
     {% if error %}
@@ -48,6 +45,7 @@
         }
         function updateDistance()
         {
+            alert('hello');
             if (navigator.geolocation)
             {
                 navigator.geolocation.watchPosition
