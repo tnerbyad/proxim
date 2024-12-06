@@ -9,9 +9,7 @@
 <body>
     <h1>{{ location.name }}</h1>
     <p>Progress: {{ location_id }} of {{ total_locations }}</p>
-    <div class="progress-bar">
-        <div style="width: {{ (location_id / total_locations) * 100 }}%;"></div>
-    </div>
+
 
     <p id="distance">Calculating distance...</p>
     <p id="clue"></p>
@@ -29,12 +27,14 @@
     </form>
 
     <script>
-        const targetLat = {{ location.lat }};
-        const targetLon = {{ location.lon }};
-        const targetProximity1 = {{ location.proximity1 }};
-        const targetProximity2 = {{ location.proximity2 }};
-        const firstClue = "{{ location.first_clue }}";
-        const secondClue = "{{ location.second_clue }}";
+
+        //const location = {{ location | tojson }};
+        const targetLat = location.lat;
+        const targetLon = location.lon;
+        const targetProximity1 = location.proximity1;
+        const targetProximity2 = location.proximity2;
+        const firstClue = location.first_clue;
+        const secondClue = location.second_clue;
 
         if (navigator.geolocation) {
             navigator.geolocation.watchPosition(position => {
