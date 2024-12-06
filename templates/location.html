@@ -7,31 +7,16 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-
     <p>Lat: {{ location.lat }}</p>
-<p>Lon: {{ location.lon }}</p>
-<p>Proximity1: {{ location.proximity1 }}</p>
-<p>Proximity2: {{ location.proximity2 }}</p>
-<p>First Clue: {{ location.first_clue }}</p>
-<p>Second Clue: {{ location.second_clue }}</p>
+    <p>Lon: {{ location.lon }}</p>
+    <p id="distance_display"></p>
+    <p id="user_lat"></p>
+    <p id="user_lon"></p>
 
-<p id="distance"></p>
-<P id="user_lat"></P>
-<p id="user_lon"></p>
-
-    <p id="distance"></p>
-    <p id="clue"></p>
-
-    {% if error %}
-        <p class="error">{{ error }}</p>
-    {% endif %}
-
-
-    here's the values:<br>
-    lat1=<p id="_lat1"></p><br>
-    long1=<p id="_lon1"></p><br>
-    lat2=<p id="_lat2"></p><br>
-    lon2=<p id="_lon2"></p><br>
+    <p id="_lat1"></p>
+    <p id="_lon1"></p>
+    <p id="_lat2"></p>
+    <p id="_lon2"></p>
 
     <script>
         const _location = {{ location | tojson }};
@@ -42,68 +27,58 @@
         const firstClue = _location.first_clue;
         const secondClue = _location.second_clue;
 
-        function calculateDistance(lat1, lon1, lat2, lon2)
-        {
-            document.getElementById("_lat1").innertText = lat1;
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            document.getElementById("_lat1").innerText = lat1;
             document.getElementById("_lon1").innerText = lon1;
             document.getElementById("_lat2").innerText = lat2;
             document.getElementById("_lon2").innerText = lon2;
 
-            const R = 20925524.9; // Radius of Earth in feet
+            const R = 20925524.9;
             const dLat = (lat2 - lat1) * (Math.PI / 180);
             const dLon = (lon2 - lon1) * (Math.PI / 180);
-            const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            const a = Math.sin(dLat / 2) ** 2 +
                       Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
-                      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+                      Math.sin(dLon / 2) ** 2;
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
             return Math.round(R * c);
         }
-        function updateDistance()
-        {
-            if (navigator.geolocation)
-            {
-                if (!_location || typeof targetLat === "undefined" || typeof targetLon === "undefined") {
-                    console.error("Location data is not ready yet.");
-                    return;
-    }
-                navigator.geolocation.watchPosition
-                (position => {
+
+        function updateDistance() {
+            if (!_location || typeof targetLat === "undefined" || typeof targetLon === "undefined") {
+                console.error("Location data is not ready yet.");
+                return;
+            }
+
+            if (navigator.geolocation) {
+                navigator.geolocation.watchPosition(
+                    position => {
                         const userLat = position.coords.latitude;
                         const userLon = position.coords.longitude;
                         const distance = calculateDistance(userLat, userLon, targetLat, targetLon);
 
-                        document.getElementById("user_lat").value = userLat;
-                        document.getElementById("user_lon").value = userLon;
-                        document.getElementById("distance").innerText = `${distance.toFixed(0)}`;
+                        document.getElementById("user_lat").innerText = userLat;
+                        document.getElementById("user_lon").innerText = userLon;
+                        document.getElementById("distance_display").innerText = `${distance.toFixed(0)}`;
 
-                        conslole.log("----values----")
-                        console.log(targetLat, targetLon);
-
-                        if (distance <= targetProximity2)
-                        {
+                        if (distance <= targetProximity2) {
                             document.getElementById("clue").innerText = secondClue;
-                            document.getElementById("magic_input_form").style.display = "block";
-                        }
-                        else if(distance <= targetProximity1)
-                        {
+                        } else if (distance <= targetProximity1) {
                             document.getElementById("clue").innerText = firstClue;
                         }
-
                     },
-                    error =>
-                    {
-                        console.error("wazzup", error);
+                    error => {
+                        console.error("Geolocation error:", error);
                     },
                     {
-                        enableHighAccuracy: true,  // High accuracy for geolocation
-                        timeout: 5000,  // Timeout after 5 seconds
-                        maximumAge: 0  // Don't use cached position
+                        enableHighAccuracy: true,
+                        timeout: 5000,
+                        maximumAge: 0,
                     }
                 );
             }
         }
 
-        setInterval(updateDistance, 2000); // Update every second
+        setInterval(updateDistance, 2000);
     </script>
 </body>
 </html>
