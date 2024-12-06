@@ -5,9 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ location.name }}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        #dist-container {
+            width: 2in; /* 2 inches wide */
+            height: 1in; /* 1 inch high */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid black; /* Optional: to visualize the container */
+            font-family: monospace; /* Ensures consistent character width */
+            overflow: hidden; /* Prevents overflow if something goes wrong */
+            text-align: center;
+            line-height: 1; /* Adjust to avoid extra spacing */
+        }
+
+        #dist {
+            width: 100%;
+            white-space: nowrap; /* Prevents the text from wrapping */
+        }
+    </style>
+
 </head>
 <body>
-    <p id="dist"></p>
+    <p id="dist">0</p>
     <p id="lat"></p>, <p id="lon"></p>
 
     <script>
@@ -21,7 +42,7 @@
 
         function calculateDistance(lat1, lon1, lat2, lon2) {
 
-            const R = 20925524.9;
+            const R = 20900999; //in feet //20925524.9;
             const dLat = (lat2 - lat1) * (Math.PI / 180);
             const dLon = (lon2 - lon1) * (Math.PI / 180);
             const a = Math.sin(dLat / 2) ** 2 +
@@ -46,7 +67,20 @@
 
                         document.getElementById("lat").innerText = userLat;
                         document.getElementById("lon").innerText = userLon;
-                        document.getElementById("dist").innerText = `${distance.toFixed(0)}`;
+
+                        const distElement = document.getElementById("dist").innerText;
+                        // Ensure consistent space for the number
+                        if (distance < 10) {
+                            distElement.style.fontSize = "2.5rem"; // Large font size for single digits
+                        } else if (distance < 100) {
+                            distElement.style.fontSize = "2rem"; // Slightly smaller for two digits
+                        } else if (distance < 1000) {
+                            distElement.style.fontSize = "1.5rem"; // Adjust for three digits
+                        } else {
+                            distElement.style.fontSize = "1.2rem"; // Smaller for four or more digits
+                        }
+                        // Update the displayed distance
+                        distElement.innerText = distance.toFixed(0); // Rounded to the nearest whole number
 
                         if (distance <= targetProximity2) {
                             document.getElementById("clue").innerText = secondClue;
