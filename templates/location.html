@@ -5,29 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ location.name }}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-
     <style>
         #dist-container {
             width: 300px; /* 2 inches wide */
-            height: 300px; /* 1 inch high */
+            height: 150px; /* 1 inch high */
             display: flex;
             justify-content: center;
             align-items: center;
-            border: 2px solid black; /* Optional: to visualize the container */
-            font-family: monospace; /* Ensures consistent character width */
-            overflow: hidden; /* Prevents overflow if something goes wrong */
+            border: 2px solid black;
+            font-family: monospace;
+            overflow: hidden;
             text-align: center;
-            line-height: 1; /* Adjust to avoid extra spacing */
-            border-radius: 150px; /* Optional: Add border radius */
-            background-color: black; /* Optional: Add background color */
-            cursor:pointer;
-        }
-
-        #dist {
-            width: 100%;
-            white-space: nowrap; /* Prevents the text from wrapping */
+            line-height: 1;
+            border-radius: 10px;
+            background-color: black;
             color: white;
-            font-size: "6rem";
+        }
+        #dist {
+            font-size: 6rem;
+        }
+        #compass-container {
+            position: relative;
+            margin-top: 20px;
         }
         #arrow {
             width: 0;
@@ -38,17 +37,17 @@
             position: absolute;
         }
     </style>
-
 </head>
 <body>
     <div id="dist-container">
         <p id="dist">0</p>
     </div>
-
     <div id="compass-container">
         <div id="arrow"></div>
     </div>
-    <p id="lat"></p>, <p id="lon"></p>
+    <p id="user-lat"></p>
+    <p id="user-lon"></p>
+    <p id="clue"></p>
     <p id="bearing"></p>
     <p id="debug"></p>
     <script>
@@ -60,9 +59,16 @@
         const firstClue = _location.first_clue;
         const secondClue = _location.second_clue;
 
-        function calculateDistance(lat1, lon1, lat2, lon2) {
+        let currentHeading = 0; // Stores the device heading
 
-            const R = 20900999; //in feet //20925524.9;
+        if (window.DeviceOrientationEvent) {
+            window.addEventListener("deviceorientation", (event) => {
+                currentHeading = event.alpha || 0; // Update current heading
+            });
+        }
+
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 20900999; // Radius in feet
             const dLat = (lat2 - lat1) * (Math.PI / 180);
             const dLon = (lon2 - lon1) * (Math.PI / 180);
             const a = Math.sin(dLat / 2) ** 2 +
@@ -72,7 +78,6 @@
             return Math.round(R * c);
         }
 
-        // Function to calculate the bearing between two locations
         function calculateBearing(lat1, lon1, lat2, lon2) {
             const dLon = (lon2 - lon1) * (Math.PI / 180);
             lat1 = lat1 * (Math.PI / 180);
@@ -81,90 +86,47 @@
             const y = Math.sin(dLon) * Math.cos(lat2);
             const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
             const bearing = Math.atan2(y, x) * (180 / Math.PI);
-            return (bearing + 360) % 360; // Normalize to 0–360 degrees
+            return (bearing + 360) % 360;
         }
 
-         //update arrow direction
-         function updateCompass(userLat, userLon, heading)
-         {
+        function updateCompass(userLat, userLon) {
             const bearingToTarget = calculateBearing(userLat, userLon, targetLat, targetLon);
-            const relativeBearing = (bearingToTarget - heading + 360) % 360; // Adjust based on device heading
-            document.getElementById("bearing").innerText = `Bearing to target: ${bearingToTarget.toFixed(0)}°`;
+            const relativeBearing = (bearingToTarget - currentHeading + 360) % 360;
 
-            // Rotate the arrow to point toward the target
-            const arrow = document.getElementById("arrow");
-            arrow.style.transform = `rotate(${relativeBearing}deg)`;
-         }
+            document.getElementById("bearing").innerText = `Bearing to target: ${bearingToTarget.toFixed(0)}°`;
+            document.getElementById("arrow").style.transform = `rotate(${relativeBearing}deg)`;
+        }
 
         function updateDisplay() {
-            if (!_location || typeof targetLat === "undefined" || typeof targetLon === "undefined") {
-                console.error("Location data is not ready yet.");
-                return;
-            }
-
             if (navigator.geolocation) {
                 navigator.geolocation.watchPosition(
-                    position => {
+                    (position) => {
                         const userLat = position.coords.latitude;
                         const userLon = position.coords.longitude;
                         const distance = calculateDistance(userLat, userLon, targetLat, targetLon);
 
-                        document.getElementById("lat").innerText = userLat;
-                        document.getElementById("lon").innerText = userLon;
+                        document.getElementById("user-lat").innerText = `Lat: ${userLat}`;
+                        document.getElementById("user-lon").innerText = `Lon: ${userLon}`;
+                        document.getElementById("dist").innerText = distance.toFixed(0);
 
-                        const distElement = document.getElementById("dist");
-                        // Ensure consistent space for the number
-                        /*if (distance < 10) {
-                            distElement.style.fontSize = "24rem"; // Large font size for single digits
-                        } else if (distance < 100) {
-                            distElement.style.fontSize = "12rem"; // Slightly smaller for two digits
-                        } else if (distance < 1000) {
-                            distElement.style.fontSize = "8rem"; // Adjust for three digits
-                        } else {
-                            distElement.style.fontSize = "6rem"; // Smaller for four or more digits
-                        }*/
-
-                        //do check to display clues
                         if (distance <= targetProximity2) {
                             document.getElementById("clue").innerText = secondClue;
                         } else if (distance <= targetProximity1) {
                             document.getElementById("clue").innerText = firstClue;
                         }
 
-                        // Update the displayed distance
-                        distElement.innerText = distance.toFixed(0); // Rounded to the nearest whole number
-
-                        // Get heading from DeviceOrientation API if available
-                        if (window.DeviceOrientationEvent) {
-                            window.addEventListener("deviceorientation", (event) => {
-                                console.error("in listener deviceorientatin");
-                                const heading = event.alpha || 0; // Alpha is compass direction in degrees
-                                document.getElementById("debug").innertText += "heading=" + heading;
-                                updateCompass(userLat, userLon, heading);
-                            });
-                        } else {
-                            document.getElementById("debug").innertText += 'no device orientation even';
-                            // If no device heading, assume north (0 degrees)
-                            updateCompass(userLat, userLon, 0);
-                        }
-
-
+                        updateCompass(userLat, userLon);
                     },
-                    error => {
-                        //console.error("Geolocation error:", error);
-                        document.getElementById("debug").innertText += "geoloc error=" + error
+                    (error) => {
+                        console.error("Geolocation error:", error);
                     },
-                    {
-                        enableHighAccuracy: true,
-                    }
+                    { enableHighAccuracy: true }
                 );
-            }
-            else {
-                console.error("Gelocation is not supported by your browser")
+            } else {
+                console.error("Geolocation is not supported by your browser.");
             }
         }
 
-        //setInterval(updateDistance, 2000);
         setInterval(updateDisplay, 2000);
     </script>
 </body>
