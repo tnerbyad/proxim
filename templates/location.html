@@ -89,9 +89,7 @@
          {
             const bearingToTarget = calculateBearing(userLat, userLon, targetLat, targetLon);
             const relativeBearing = (bearingToTarget - heading + 360) % 360; // Adjust based on device heading
-            //document.getElementById("bearing").innerText = `Bearing to target: ${bearingToTarget.toFixed(0)}°`;
-alert(bearingToTarget + "--bearing");
-alert(relativeBearing + "RB");
+            document.getElementById("bearing").innerText = `Bearing to target: ${bearingToTarget.toFixed(0)}°`;
 
             // Rotate the arrow to point toward the target
             const arrow = document.getElementById("arrow");
@@ -114,9 +112,9 @@ alert(relativeBearing + "RB");
                         document.getElementById("lat").innerText = userLat;
                         document.getElementById("lon").innerText = userLon;
 
-                        /*const distElement = document.getElementById("dist");
+                        const distElement = document.getElementById("dist");
                         // Ensure consistent space for the number
-                        if (distance < 10) {
+                        /*if (distance < 10) {
                             distElement.style.fontSize = "24rem"; // Large font size for single digits
                         } else if (distance < 100) {
                             distElement.style.fontSize = "12rem"; // Slightly smaller for two digits
