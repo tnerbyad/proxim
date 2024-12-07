@@ -27,6 +27,7 @@
             width: 100%;
             white-space: nowrap; /* Prevents the text from wrapping */
             color: white;
+            font-size: "6rem";
         }
     </style>
 
@@ -34,6 +35,7 @@
 <body>
     <div id="dist-container">
         <p id="dist">0</p>
+        <div id="arrow"></div>
     </div>
     <p id="lat"></p>, <p id="lon"></p>
 
@@ -58,7 +60,31 @@
             return Math.round(R * c);
         }
 
-        function updateDistance() {
+        // Function to calculate the bearing between two locations
+        function calculateBearing(lat1, lon1, lat2, lon2) {
+            const dLon = (lon2 - lon1) * (Math.PI / 180);
+            lat1 = lat1 * (Math.PI / 180);
+            lat2 = lat2 * (Math.PI / 180);
+
+            const y = Math.sin(dLon) * Math.cos(lat2);
+            const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
+            const bearing = Math.atan2(y, x) * (180 / Math.PI);
+            return (bearing + 360) % 360; // Normalize to 0–360 degrees
+        }
+
+         //update arrow direction
+         function updateCompass(userLat, userlon, heading)
+         {
+            const bearingToTarget = calculateBearing(userLat, userLon, targetLat, targetLon);
+            const relativeBearing = (bearingToTarget - heading + 360) % 360; // Adjust based on device heading
+            document.getElementById("bearing").innerText = `Bearing to target: ${bearingToTarget.toFixed(0)}°`;
+
+            // Rotate the arrow to point toward the target
+            const arrow = document.getElementById("arrow");
+            arrow.style.transform = `rotate(${relativeBearing}deg)`;
+         }
+
+        function updateDisplay() {
             if (!_location || typeof targetLat === "undefined" || typeof targetLon === "undefined") {
                 console.error("Location data is not ready yet.");
                 return;
@@ -85,14 +111,28 @@
                         } else {
                             distElement.style.fontSize = "6rem"; // Smaller for four or more digits
                         }
-                        // Update the displayed distance
-                        distElement.innerText = distance.toFixed(0); // Rounded to the nearest whole number
-
+                        //do check to display clues
                         if (distance <= targetProximity2) {
                             document.getElementById("clue").innerText = secondClue;
                         } else if (distance <= targetProximity1) {
                             document.getElementById("clue").innerText = firstClue;
                         }
+
+                        // Update the displayed distance
+                        distElement.innerText = distance.toFixed(0); // Rounded to the nearest whole number
+
+                        // Get heading from DeviceOrientation API if available
+                        if (window.DeviceOrientationEvent) {
+                            window.addEventListener("deviceorientation", (event) => {
+                                const heading = event.alpha || 0; // Alpha is compass direction in degrees
+                                updateCompass(userLat, userLon, heading);
+                            });
+                        } else {
+                            // If no device heading, assume north (0 degrees)
+                            updateCompass(userLat, userLon, 0);
+                        }
+
+
                     },
                     error => {
                         console.error("Geolocation error:", error);
@@ -106,7 +146,8 @@
             }
         }
 
-        setInterval(updateDistance, 2000);
+        //setInterval(updateDistance, 2000);
+        setInterval(updateDisplay, 2000);
     </script>
 </body>
 </html>
