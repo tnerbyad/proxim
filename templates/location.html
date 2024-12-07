@@ -50,6 +50,7 @@
     </div>
     <p id="lat"></p>, <p id="lon"></p>
     <p id="bearing"></p>
+    <p id="debug"></p>
     <script>
         const _location = {{ location | tojson }};
         const targetLat = _location.lat;
@@ -88,7 +89,9 @@
          {
             const bearingToTarget = calculateBearing(userLat, userLon, targetLat, targetLon);
             const relativeBearing = (bearingToTarget - heading + 360) % 360; // Adjust based on device heading
-            document.getElementById("bearing").innerText = `Bearing to target: ${bearingToTarget.toFixed(0)}°`;
+            //document.getElementById("bearing").innerText = `Bearing to target: ${bearingToTarget.toFixed(0)}°`;
+alert(bearingToTarget + "--bearing");
+alert(relativeBearing + "RB");
 
             // Rotate the arrow to point toward the target
             const arrow = document.getElementById("arrow");
@@ -111,7 +114,7 @@
                         document.getElementById("lat").innerText = userLat;
                         document.getElementById("lon").innerText = userLon;
 
-                        const distElement = document.getElementById("dist");
+                        /*const distElement = document.getElementById("dist");
                         // Ensure consistent space for the number
                         if (distance < 10) {
                             distElement.style.fontSize = "24rem"; // Large font size for single digits
@@ -121,7 +124,8 @@
                             distElement.style.fontSize = "8rem"; // Adjust for three digits
                         } else {
                             distElement.style.fontSize = "6rem"; // Smaller for four or more digits
-                        }
+                        }*/
+
                         //do check to display clues
                         if (distance <= targetProximity2) {
                             document.getElementById("clue").innerText = secondClue;
@@ -137,11 +141,11 @@
                             window.addEventListener("deviceorientation", (event) => {
                                 console.error("in listener deviceorientatin");
                                 const heading = event.alpha || 0; // Alpha is compass direction in degrees
-                                error.log("heading=" + heading);
+                                document.getElementById("debug").innertText += "heading=" + heading;
                                 updateCompass(userLat, userLon, heading);
                             });
                         } else {
-                            console.error('no device orientation even');
+                            document.getElementById("debug").innertText += 'no device orientation even';
                             // If no device heading, assume north (0 degrees)
                             updateCompass(userLat, userLon, 0);
                         }
@@ -149,7 +153,8 @@
 
                     },
                     error => {
-                        console.error("Geolocation error:", error);
+                        //console.error("Geolocation error:", error);
+                        document.getElementById("debug").innertText += "geoloc error=" + error
                     },
                     {
                         enableHighAccuracy: true,
