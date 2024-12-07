@@ -139,6 +139,7 @@
                                 updateCompass(userLat, userLon, heading);
                             });
                         } else {
+                            alert('no device orientation even');
                             // If no device heading, assume north (0 degrees)
                             updateCompass(userLat, userLon, 0);
                         }
