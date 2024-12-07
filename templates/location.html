@@ -85,7 +85,7 @@
         }
 
          //update arrow direction
-         function updateCompass(userLat, userlon, heading)
+         function updateCompass(userLat, userLon, heading)
          {
             const bearingToTarget = calculateBearing(userLat, userLon, targetLat, targetLon);
             const relativeBearing = (bearingToTarget - heading + 360) % 360; // Adjust based on device heading
