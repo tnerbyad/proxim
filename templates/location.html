@@ -68,8 +68,6 @@
             window.addEventListener("deviceorientation", (event) => {
                 const heading = event.alpha || 0; // Alpha represents the compass heading
                 currentHeading = heading; // Update the global heading
-                //debug
-                document.getElementById("device_orientation").innerText = "device_or=" + heading;
 
                 const userLat = parseFloat(document.getElementById("user-lat").innerText.split(": ")[1]) || 0;
                 const userLon = parseFloat(document.getElementById("user-lon").innerText.split(": ")[1]) || 0;
@@ -170,6 +168,9 @@
 
         function handleOrientationEvent(event) {
             const heading = event.alpha; // Alpha is the compass heading
+            //debug
+            document.getElementById("device_orientation").innerText = "device_or=" + heading;
+
             console.log(`Heading: ${heading}`);
             // Update your UI with the heading
         }
