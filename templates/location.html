@@ -50,91 +50,132 @@
     <p id="clue"></p>
     <p id="bearing"></p>
     <p id="debug"></p>
+    <p id="device_orientation"></p>
+
     <script>
-const _location = {{ location | tojson }};
-const targetLat = _location.lat;
-const targetLon = _location.lon;
-const targetProximity1 = _location.proximity1;
-const targetProximity2 = _location.proximity2;
-const firstClue = _location.first_clue;
-const secondClue = _location.second_clue;
+        const _location = {{ location | tojson }};
+        const targetLat = _location.lat;
+        const targetLon = _location.lon;
+        const targetProximity1 = _location.proximity1;
+        const targetProximity2 = _location.proximity2;
+        const firstClue = _location.first_clue;
+        const secondClue = _location.second_clue;
 
-let currentHeading = 0; // Stores the device heading
+        let currentHeading = 0; // Stores the device heading
 
-// Add DeviceOrientation listener
-if (window.DeviceOrientationEvent) {
-    window.addEventListener("deviceorientation", (event) => {
-        const heading = event.alpha || 0; // Alpha represents the compass heading
-        currentHeading = heading; // Update the global heading
-        const userLat = parseFloat(document.getElementById("user-lat").innerText.split(": ")[1]) || 0;
-        const userLon = parseFloat(document.getElementById("user-lon").innerText.split(": ")[1]) || 0;
-        updateCompass(userLat, userLon); // Update compass direction
-    });
-} else {
-    console.error("DeviceOrientationEvent is not supported by this browser.");
-}
+        // Add DeviceOrientation listener
+        if (window.DeviceOrientationEvent) {
+            window.addEventListener("deviceorientation", (event) => {
+                const heading = event.alpha || 0; // Alpha represents the compass heading
+                currentHeading = heading; // Update the global heading
+                //debug
+                document.getElementById("device_orientation").innerText = "device_or=" + heading;
 
-function calculateDistance(lat1, lon1, lat2, lon2) {
-    const R = 20900999; // Radius in feet
-    const dLat = (lat2 - lat1) * (Math.PI / 180);
-    const dLon = (lon2 - lon1) * (Math.PI / 180);
-    const a = Math.sin(dLat / 2) ** 2 +
-              Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
-              Math.sin(dLon / 2) ** 2;
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return Math.round(R * c);
-}
+                const userLat = parseFloat(document.getElementById("user-lat").innerText.split(": ")[1]) || 0;
+                const userLon = parseFloat(document.getElementById("user-lon").innerText.split(": ")[1]) || 0;
+                updateCompass(userLat, userLon); // Update compass direction
+            });
+        } else {
+            console.error("DeviceOrientationEvent is not supported by this browser.");
+        }
 
-function calculateBearing(lat1, lon1, lat2, lon2) {
-    const dLon = (lon2 - lon1) * (Math.PI / 180);
-    lat1 = lat1 * (Math.PI / 180);
-    lat2 = lat2 * (Math.PI / 180);
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 20900999; // Radius in feet
+            const dLat = (lat2 - lat1) * (Math.PI / 180);
+            const dLon = (lon2 - lon1) * (Math.PI / 180);
+            const a = Math.sin(dLat / 2) ** 2 +
+                    Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
+                    Math.sin(dLon / 2) ** 2;
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+            return Math.round(R * c);
+        }
 
-    const y = Math.sin(dLon) * Math.cos(lat2);
-    const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
-    const bearing = Math.atan2(y, x) * (180 / Math.PI);
-    return (bearing + 360) % 360;
-}
+        function calculateBearing(lat1, lon1, lat2, lon2) {
+            const dLon = (lon2 - lon1) * (Math.PI / 180);
+            lat1 = lat1 * (Math.PI / 180);
+            lat2 = lat2 * (Math.PI / 180);
 
-function updateCompass(userLat, userLon) {
-    const bearingToTarget = calculateBearing(userLat, userLon, targetLat, targetLon);
-    const relativeBearing = (bearingToTarget - currentHeading + 360) % 360;
+            const y = Math.sin(dLon) * Math.cos(lat2);
+            const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
+            const bearing = Math.atan2(y, x) * (180 / Math.PI);
+            return (bearing + 360) % 360;
+        }
 
-    document.getElementById("bearing").innerText = `Bearing to target: ${bearingToTarget.toFixed(0)}°`;
-    document.getElementById("arrow").style.transform = `rotate(${relativeBearing}deg)`;
-}
+        function updateCompass(userLat, userLon) {
+            const bearingToTarget = calculateBearing(userLat, userLon, targetLat, targetLon);
+            const relativeBearing = (bearingToTarget - currentHeading + 360) % 360;
 
-function updateDisplay() {
-    if (navigator.geolocation) {
-        navigator.geolocation.watchPosition(
-            (position) => {
-                const userLat = position.coords.latitude;
-                const userLon = position.coords.longitude;
-                const distance = calculateDistance(userLat, userLon, targetLat, targetLon);
+            document.getElementById("bearing").innerText = `Bearing to target: ${bearingToTarget.toFixed(0)}°`;
+            document.getElementById("arrow").style.transform = `rotate(${relativeBearing}deg)`;
+        }
 
-                document.getElementById("user-lat").innerText = `Lat: ${userLat}`;
-                document.getElementById("user-lon").innerText = `Lon: ${userLon}`;
-                document.getElementById("dist").innerText = distance.toFixed(0);
+        function updateDisplay()
+        {
+            if (navigator.geolocation) {
+                navigator.geolocation.watchPosition(
+                    (position) => {
+                        const userLat = position.coords.latitude;
+                        const userLon = position.coords.longitude;
+                        const distance = calculateDistance(userLat, userLon, targetLat, targetLon);
 
-                if (distance <= targetProximity2) {
-                    document.getElementById("clue").innerText = secondClue;
-                } else if (distance <= targetProximity1) {
-                    document.getElementById("clue").innerText = firstClue;
-                }
+                        document.getElementById("user-lat").innerText = `Lat: ${userLat}`;
+                        document.getElementById("user-lon").innerText = `Lon: ${userLon}`;
+                        document.getElementById("dist").innerText = distance.toFixed(0);
 
-                updateCompass(userLat, userLon); // Ensure compass updates on location change
-            },
-            (error) => {
-                console.error("Geolocation error:", error);
-            },
-            { enableHighAccuracy: true }
-        );
-    } else {
-        console.error("Geolocation is not supported by your browser.");
-    }
-}
+                        if (distance <= targetProximity2) {
+                            document.getElementById("clue").innerText = secondClue;
+                        } else if (distance <= targetProximity1) {
+                            document.getElementById("clue").innerText = firstClue;
+                        }
 
-setInterval(updateDisplay, 2000);
+                        updateCompass(userLat, userLon); // Ensure compass updates on location change
+                    },
+                    (error) => {
+                        console.error("Geolocation error:", error);
+                    },
+                    { enableHighAccuracy: true }
+                );
+            } else {
+                console.error("Geolocation is not supported by your browser.");
+            }
+        }
+
+        setInterval(updateDisplay, 2000);
+
+
+        function enableDeviceOrientation()
+        {
+            if (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function") {
+                // iOS Safari requires explicit permission
+                DeviceOrientationEvent.requestPermission()
+                    .then((permissionState) => {
+                        if (permissionState === "granted") {
+                            console.log("Device orientation permission granted.");
+                            window.addEventListener("deviceorientation", handleOrientationEvent);
+                        } else {
+                            console.error("Device orientation permission denied.");
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Error while requesting DeviceOrientationEvent permission:", error);
+                    });
+            } else if (typeof DeviceOrientationEvent !== "undefined") {
+                // For non-iOS devices that don't require explicit permission
+                console.log("Device orientation supported without explicit permission.");
+                window.addEventListener("deviceorientation", handleOrientationEvent);
+            } else {
+                console.error("DeviceOrientationEvent is not supported on this browser.");
+            }
+        }
+
+        function handleOrientationEvent(event) {
+            const heading = event.alpha; // Alpha is the compass heading
+            console.log(`Heading: ${heading}`);
+            // Update your UI with the heading
+        }
+
+        // Automatically check and request permission
+        enableDeviceOrientation();
     </script>
 </body>
 </html>
