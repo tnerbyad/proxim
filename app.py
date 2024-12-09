@@ -47,6 +47,7 @@ LOCATIONS = [
 def home():
     return render_template("home.html")
 
+@app.route("/device")
 def device():
     return render_template("device.html")
 
