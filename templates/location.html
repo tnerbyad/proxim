@@ -3,8 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Multi-Location Tracker</title>
+    <title>{{ location.name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <style>
+        #dist-container {
+            width: 300px; /* 2 inches wide */
+            height: 300px; /* 1 inch high */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid black;
+            font-family: monospace;
+            overflow: hidden;
+            text-align: center;
+            line-height: 1;
+            border-radius: 150px;
+            background-color: black;
+            color: white;
+        }
+        #dist {
+            font-size: 6rem;
+        }
+        #compass-container {
+            position: relative;
+            margin-top: 20px;
+        }
         #arrow {
             width: 0;
             height: 0;
@@ -12,37 +35,19 @@
             border-right: 20px solid transparent;
             border-bottom: 40px solid red;
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform-origin: center;
-        }
-        #info {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 10px;
-            font-family: Arial, sans-serif;
-            border-radius: 5px;
-            overflow-y: auto;
-            max-height: 80vh;
         }
     </style>
 </head>
 <body>
-    <div id="info">
-        <p id="user-location"></p>
-        <div id="locations"></div>
-        <p id="phone-orientation"></p>
-        <p id="user-lat"></p>
-        <p id="user-lon"></p>
-        <p id="dist"></p>
+    <div id="dist-container">
+        <p id="dist_to_target">distance_to_target</p>
     </div>
-    <div id="arrow"></div>
+    <div id="bearing_to_target">bearing_to_target</div>
+    <div id="device_orientation">device_orientation</div>
+    <div id="current_lattitude">current_lattitude</div>
+    <div id="current_longitude">current_longitude</div>
 
     <script>
-        // Dynamic location data passed from the backend (Flask app.py)
         const _location = {{ location | tojson }};
         const targetLat = _location.lat;
         const targetLon = _location.lon;
@@ -51,40 +56,30 @@
         const firstClue = _location.first_clue;
         const secondClue = _location.second_clue;
 
-        let userLat, userLon;
+        let currentHeading = 0; // Stores the device heading
 
-        // Function to calculate distance between two points
         function calculateDistance(lat1, lon1, lat2, lon2) {
-            const R = 6371e3; // Earth's radius in meters
-            const toRadians = degrees => degrees * (Math.PI / 180);
-            const dLat = toRadians(lat2 - lat1);
-            const dLon = toRadians(lon2 - lon1);
-
+            const R = 20900999; // Radius in feet
+            const dLat = (lat2 - lat1) * (Math.PI / 180);
+            const dLon = (lon2 - lon1) * (Math.PI / 180);
             const a = Math.sin(dLat / 2) ** 2 +
-                      Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) *
-                      Math.sin(dLon / 2) ** 2;
-
+                    Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
+                    Math.sin(dLon / 2) ** 2;
             const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-            return R * c; // Distance in meters
+            return Math.round(R * c);
         }
 
-        // Function to calculate bearing between two points
         function calculateBearing(lat1, lon1, lat2, lon2) {
-            const toRadians = degrees => degrees * (Math.PI / 180);
-            const toDegrees = radians => radians * (180 / Math.PI);
-
-            const dLon = toRadians(lon2 - lon1);
-            lat1 = toRadians(lat1);
-            lat2 = toRadians(lat2);
+            const dLon = (lon2 - lon1) * (Math.PI / 180);
+            lat1 = lat1 * (Math.PI / 180);
+            lat2 = lat2 * (Math.PI / 180);
 
             const y = Math.sin(dLon) * Math.cos(lat2);
-            const x = Math.cos(lat1) * Math.sin(lat2) -
-                      Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
-            const bearing = toDegrees(Math.atan2(y, x));
-            return (bearing + 360) % 360; // Normalize to 0–360 degrees
+            const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
+            const bearing = Math.atan2(y, x) * (180 / Math.PI);
+            return (bearing + 360) % 360;
         }
 
-        // Function to update the display for all target locations
         function updateDisplay()
         {
             if (navigator.geolocation) {
@@ -93,10 +88,13 @@
                         const userLat = position.coords.latitude;
                         const userLon = position.coords.longitude;
                         const distance = calculateDistance(userLat, userLon, targetLat, targetLon);
+                        const bearing = calculateBearing(userLat, userLon, targetLat, targetLon)
 
-                        document.getElementById("user-lat").innerText = `Lat: ${userLat}`;
-                        document.getElementById("user-lon").innerText = `Lon: ${userLon}`;
-                        document.getElementById("dist").innerText = distance.toFixed(0);
+                        document.getElementById("current_lattitude").innerText = `Lat: ${userLat}`;
+                        document.getElementById("current_longitude").innerText = `Lon: ${userLon}`;
+                        document.getElementById("distance_to_target").innerText = distance.toFixed(0);
+                        document.getElementById("bearing_to_target").innerText = bearing.toFixed(0);
+
 
                         if (distance <= targetProximity2) {
                             document.getElementById("clue").innerText = secondClue;
@@ -116,50 +114,60 @@
             }
         }
 
-        // Function to track device orientation
-        function trackOrientation() {
-            if (window.DeviceOrientationEvent) {
-                window.addEventListener("deviceorientation", (event) => {
-                    const phoneOrientation = event.alpha || 0; // Alpha gives orientation in degrees
-                    document.getElementById("phone-orientation").innerText = `Phone Orientation: ${phoneOrientation.toFixed(0)}°`;
 
-                    if (userLat !== undefined && userLon !== undefined) {
-                        const closestLocation = locations[0]; // Example: Compare with the first location
-                        const headingToTarget = calculateBearing(userLat, userLon, closestLocation.lat, closestLocation.lon);
-                        const alignment = (headingToTarget - phoneOrientation + 360) % 360;
 
-                        // Rotate the arrow to point toward the target
-                        const arrow = document.getElementById("arrow");
-                        arrow.style.transform = `rotate(${alignment}deg)`;
-                    }
-                });
-            } else {
-                document.getElementById("phone-orientation").innerText = `DeviceOrientationEvent not supported`;
-            }
+        // Add DeviceOrientation listener
+        if (window.DeviceOrientationEvent) {
+            window.addEventListener("deviceorientation", (event) => {
+                const heading = event.alpha || 0; // Alpha represents the compass heading
+                currentHeading = heading; // Update the global heading
+
+                const userLat = parseFloat(document.getElementById("user-lat").innerText.split(": ")[1]) || 0;
+                const userLon = parseFloat(document.getElementById("user-lon").innerText.split(": ")[1]) || 0;
+                updateCompass(userLat, userLon); // Update compass direction
+            });
+        } else {
+            console.error("DeviceOrientationEvent is not supported by this browser.");
         }
 
-        // Function to check and request orientation permissions on iOS
-        function enableDeviceOrientation() {
+        function enableDeviceOrientation()
+        {
             if (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function") {
+                // iOS Safari requires explicit permission
                 DeviceOrientationEvent.requestPermission()
-                    .then(permissionState => {
+                    .then((permissionState) => {
                         if (permissionState === "granted") {
-                            trackOrientation();
+                            console.log("Device orientation permission granted.");
+                            window.addEventListener("deviceorientation", handleOrientationEvent);
                         } else {
                             console.error("Device orientation permission denied.");
                         }
                     })
-                    .catch(error => {
-                        console.error("Error requesting DeviceOrientationEvent permission:", error);
+                    .catch((error) => {
+                        console.error("Error while requesting DeviceOrientationEvent permission:", error);
                     });
+            } else if (typeof DeviceOrientationEvent !== "undefined") {
+                // For non-iOS devices that don't require explicit permission
+                console.log("Device orientation supported without explicit permission.");
+                window.addEventListener("deviceorientation", handleOrientationEvent);
             } else {
-                trackOrientation(); // Permission not required on non-iOS devices
+                console.error("DeviceOrientationEvent is not supported on this browser.");
             }
         }
 
-        // Start tracking location and orientation
-        enableDeviceOrientation();
-        setInterval(updateDisplay, 2000); // Update location and distance every 2 seconds
+        function handleOrientationEvent(event) {
+
+            const heading = event.alpha; // Alpha is the compass heading
+            //debug
+            document.getElementById("device_orientation").innerText = "device_or=" + heading;
+
+            console.log(`Heading: ${heading}`);
+            // Update your UI with the heading
+        }
+
+       // enableDeviceOrientation();
+        setInterval(updateDisplay, 2000);
+
     </script>
 </body>
 </html>
