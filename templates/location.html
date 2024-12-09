@@ -35,12 +35,21 @@
         <p id="user-location"></p>
         <div id="locations"></div>
         <p id="phone-orientation"></p>
+        <p id="user-lat"></p>
+        <p id="user-lon"></p>
+        <p id="dist"></p>
     </div>
     <div id="arrow"></div>
 
     <script>
         // Dynamic location data passed from the backend (Flask app.py)
-        const locations = {{ locations | tojson }}; // Example: [{name: "Location 1", lat: 40.748817, lon: -73.985428}, ...]
+        const _location = {{ location | tojson }};
+        const targetLat = _location.lat;
+        const targetLon = _location.lon;
+        const targetProximity1 = _location.proximity1;
+        const targetProximity2 = _location.proximity2;
+        const firstClue = _location.first_clue;
+        const secondClue = _location.second_clue;
 
         let userLat, userLon;
 
@@ -76,41 +85,34 @@
         }
 
         // Function to update the display for all target locations
-        function updateDisplay() {
+        function updateDisplay()
+        {
             if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    position => {
-                        userLat = position.coords.latitude;
-                        userLon = position.coords.longitude;
-                        const locationsContainer = document.getElementById("locations");
+                navigator.geolocation.watchPosition(
+                    (position) => {
+                        const userLat = position.coords.latitude;
+                        const userLon = position.coords.longitude;
+                        const distance = calculateDistance(userLat, userLon, targetLat, targetLon);
 
-                        // Update user location
-                        document.getElementById("user-location").innerText = `Your Location: Lat ${userLat.toFixed(4)}, Lon ${userLon.toFixed(4)}`;
+                        document.getElementById("user-lat").innerText = `Lat: ${userLat}`;
+                        document.getElementById("user-lon").innerText = `Lon: ${userLon}`;
+                        document.getElementById("dist").innerText = distance.toFixed(0);
 
-                        // Clear and update distances and headings for all locations
-                        locationsContainer.innerHTML = "";
-                        locations.forEach(location => {
-                            const distanceToTarget = calculateDistance(userLat, userLon, location.lat, location.lon);
-                            const headingToTarget = calculateBearing(userLat, userLon, location.lat, location.lon);
+                        if (distance <= targetProximity2) {
+                            document.getElementById("clue").innerText = secondClue;
+                        } else if (distance <= targetProximity1) {
+                            document.getElementById("clue").innerText = firstClue;
+                        }
 
-                            const locationInfo = document.createElement("div");
-                            locationInfo.innerHTML = `
-                                <strong>${location.name}</strong><br>
-                                Distance: ${(distanceToTarget / 1000).toFixed(2)} km<br>
-                                Heading: ${headingToTarget.toFixed(0)}°
-                            `;
-                            locationsContainer.appendChild(locationInfo);
-                        });
+                        updateCompass(userLat, userLon); // Ensure compass updates on location change
                     },
-                    error => {
+                    (error) => {
                         console.error("Geolocation error:", error);
                     },
-                    {
-                        enableHighAccuracy: true,
-                    }
+                    { enableHighAccuracy: true }
                 );
             } else {
-                console.error("Geolocation is not supported by this browser.");
+                console.error("Geolocation is not supported by your browser.");
             }
         }
 
