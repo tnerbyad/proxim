@@ -33,12 +33,20 @@
     <p id="support"></p>
 
     <script>
+        if (window.orientation)
+        {
+            console.error("AAAA---->");
+            console.error("alpha=" + window.alpha);
+            console.error("<----BBBB");
+        }
+
         // Check if the device supports DeviceOrientationEvent
         if (window.DeviceOrientationEvent) {
             document.getElementById("support").textContent = "DeviceOrientationEvent is supported!";
 
             // Add event listener
             window.addEventListener("deviceorientation", (event) => {
+                console.error("deviceorientation --HIT");
                 const { alpha, beta, gamma } = event;
 
                 // Update the values on the page
