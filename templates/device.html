@@ -48,7 +48,7 @@
             window.addEventListener("deviceorientation", (event) => {
                 console.error("deviceorientation --HIT");
                 const { alpha, beta, gamma } = event;
-
+                console.error("alpha=" + alpha);
                 // Update the values on the page
                 document.getElementById("alpha").textContent = `Alpha: ${alpha.toFixed(2)}°`;
                 document.getElementById("beta").textContent = `Beta: ${beta.toFixed(2)}°`;
