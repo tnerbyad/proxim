@@ -6,8 +6,20 @@ app.secret_key = "your_secret_key_here"  # Replace with a secure key
 
 # Define locations and clues
 LOCATIONS = [
-    {
+        {
         "name": "location1",
+        "description": "Angies",
+        "lat": 41.77737117328678,
+        "lon": -111.80637179308403,
+        "proximity1": 100,
+        "proximity2": 25,
+        "first_clue": "clue 1Eat the kitchen sink",
+        "second_clue": "clue two cost with tax - is magic box showing",
+        "magic_input": "$11.33",
+        "next": "/location3",
+    },
+    {
+        "name": "location2",
         "description": "hyde park, city hall",
         "lat": 41.79938501121729,
         "lon": -111.81619927128764,
@@ -17,18 +29,6 @@ LOCATIONS = [
         "second_clue": "Almost there! The magic word is hidden in plain sight.",
         "magic_input": "Hyde Park",
         "next": "/loc2",
-    },
-    {
-        "name": "location2",
-        "description": "Angies",
-        "lat": 41.77737117328678,
-        "lon": -111.80637179308403,
-        "proximity1": 100,
-        "proximity2": 25,
-        "first_clue": "clue 1Eat the kitchen sink",
-        "second_clue": "cost with tax",
-        "magic_input": "$11.33",
-        "next": "/location3",
     },
     {
         "name": "location3",
