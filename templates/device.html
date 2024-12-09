@@ -34,18 +34,39 @@
     <button id="requestPermissionButton">Enable Motion Sensors</button>
 
     <script>
-        document.querySelector("#requestPermissionButton").addEventListener("click", () => {
-    DeviceOrientationEvent.requestPermission()
-        .then((state) => {
-            if (state === "granted") {
-                console.log("Permission granted!");
-                startListeningForOrientation();
-            } else {
-                console.log("Permission denied.");
-            }
-        })
-        .catch((error) => console.error("Error requesting permission:", error));
+       document.querySelector("#requestPermissionButton").addEventListener("click", () => {
+    if (typeof DeviceOrientationEvent.requestPermission === "function") {
+        // If requestPermission is supported
+        DeviceOrientationEvent.requestPermission()
+            .then((state) => {
+                if (state === "granted") {
+                    console.log("Permission granted!");
+                    startListeningForOrientation();
+                } else {
+                    console.log("Permission denied.");
+                }
+            })
+            .catch((error) => console.error("Error requesting permission:", error));
+    } else {
+        // If requestPermission is not supported
+        console.log("requestPermission is not supported on this browser.");
+        startListeningForOrientation();
+    }
 });
+
+function startListeningForOrientation() {
+    if (window.DeviceOrientationEvent) {
+        window.addEventListener("deviceorientation", (event) => {
+            const { alpha, beta, gamma } = event;
+            document.getElementById("alpha").textContent = `Alpha: ${alpha !== null ? alpha.toFixed(2) : "Not available"}°`;
+            document.getElementById("beta").textContent = `Beta: ${beta.toFixed(2)}°`;
+            document.getElementById("gamma").textContent = `Gamma: ${gamma.toFixed(2)}°`;
+        });
+    } else {
+        console.log("DeviceOrientationEvent is not supported on this device.");
+    }
+}
+
 window.addEventListener("deviceorientationabsolute", (event) => {
     const { alpha, beta, gamma } = event;
     console.log("Absolute Orientation: ", alpha, beta, gamma);
