@@ -43,9 +43,9 @@
         <p id="distance_to_target">distance_to_target</p>
     </div>
     <div id="bearing_to_target">bearing_to_target</div>
-    <div id="device_orientation_alpha">device_orientation</div>
-    <div id="current_lattitude">current_lattitude</div>
-    <div id="current_longitude">current_longitude</div>
+    <div id="device_orientation_alpha"></div>
+    <div id="current_lattitude"></div>
+    <div id="current_longitude"></div>
     <button id="requestPermissionButton">??</button>
 
     <script>
@@ -148,8 +148,8 @@
                         const bearingToTarget = calculateBearing(userLat, userLon, targetLat, targetLon)
 
                         console.error ("distToTarget=" + distToTarget + " | bearingToTarget=" + bearingToTarget);
-                        document.getElementById("current_lattitude").innerText = `Lat: ${userLat}`;
-                        document.getElementById("current_longitude").innerText = `Lon: ${userLon}`;
+                        //document.getElementById("current_lattitude").innerText = `Lat: ${userLat}`;
+                        //document.getElementById("current_longitude").innerText = `Lon: ${userLon}`;
                         document.getElementById("distance_to_target").innerText = distToTarget.toFixed(0);
                         document.getElementById("bearing_to_target").innerText = bearingToTarget.toFixed(0);//bearing.toFixed(0);
 
