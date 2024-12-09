@@ -31,13 +31,42 @@
         <strong>Gamma:</strong> Rotation around the Y-axis (-90° to 90°).
     </p>
     <p id="support"></p>
+    <button id="requestPermissionButton">Enable Motion Sensors</button>
 
     <script>
-        if (window.orientation)
-        {
-            console.error("AAAA---->");
-            console.error("alpha=" + window.alpha);
-            console.error("<----BBBB");
+        document.querySelector("#requestPermissionButton").addEventListener("click", () => {
+    DeviceOrientationEvent.requestPermission()
+        .then((state) => {
+            if (state === "granted") {
+                console.log("Permission granted!");
+                startListeningForOrientation();
+            } else {
+                console.log("Permission denied.");
+            }
+        })
+        .catch((error) => console.error("Error requesting permission:", error));
+});
+window.addEventListener("deviceorientationabsolute", (event) => {
+    const { alpha, beta, gamma } = event;
+    console.log("Absolute Orientation: ", alpha, beta, gamma);
+});
+
+        if (typeof DeviceOrientationEvent.requestPermission === "function") {
+            // Requires a user gesture like a button click
+            document.querySelector("#requestPermissionButton").addEventListener("click", () => {
+                DeviceOrientationEvent.requestPermission()
+                    .then((state) => {
+                        if (state === "granted") {
+                            console.log("Permission granted!");
+                            startListeningForOrientation();
+                        } else {
+                            console.log("Permission denied.");
+                        }
+                    })
+                    .catch((error) => console.error("Error requesting permission:", error));
+            });
+        } else {
+            console.log("DeviceOrientationEvent.requestPermission is not required or not supported.");
         }
 
         // Check if the device supports DeviceOrientationEvent
