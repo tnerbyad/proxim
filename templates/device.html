@@ -22,7 +22,7 @@
 </head>
 <body>
     <h1>Device Orientation Demo</h1>
-    <div id="alpha" class="value">Alpha: 0°</div>
+    <div id="alpha" class="value"></div>
     <div id="beta" class="value">Beta: 0°</div>
     <div id="gamma" class="value">Gamma: 0°</div>
     <p class="description">
@@ -31,7 +31,7 @@
         <strong>Gamma:</strong> Rotation around the Y-axis (-90° to 90°).
     </p>
     <p id="support"></p>
-    <button id="requestPermissionButton">Enable Motion Sensors11</button>
+    <button id="requestPermissionButton">Enable Motion Sensors12</button>
 
     <script>
        document.querySelector("#requestPermissionButton").addEventListener("click", () => {
@@ -58,9 +58,9 @@ function startListeningForOrientation() {
     if (window.DeviceOrientationEvent) {
         window.addEventListener("deviceorientation", (event) => {
             const { alpha, beta, gamma } = event;
-            document.getElementById("alpha").textContent = `Alpha: ${alpha !== null ? alpha.toFixed(2) : "Not available"}°`;
-            document.getElementById("beta").textContent = `Beta: ${beta.toFixed(2)}°`;
-            document.getElementById("gamma").textContent = `Gamma: ${gamma.toFixed(2)}°`;
+            document.getElementById("alpha").textContent = `Alpha: ${alpha !== null ? alpha.toFixed(0) : "Not available"}°`;
+           // document.getElementById("beta").textContent = `Beta: ${beta.toFixed(2)}°`;
+            //document.getElementById("gamma").textContent = `Gamma: ${gamma.toFixed(2)}°`;
         });
     } else {
         console.log("DeviceOrientationEvent is not supported on this device.");
