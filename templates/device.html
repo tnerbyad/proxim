@@ -72,7 +72,7 @@ window.addEventListener("deviceorientationabsolute", (event) => {
     console.log("Absolute Orientation: ", alpha, beta, gamma);
 });
 
-        if (typeof DeviceOrientationEvent.requestPermission === "function") {
+       /*if (typeof DeviceOrientationEvent.requestPermission === "function") {
             // Requires a user gesture like a button click
             document.querySelector("#requestPermissionButton").addEventListener("click", () => {
                 DeviceOrientationEvent.requestPermission()
@@ -89,24 +89,7 @@ window.addEventListener("deviceorientationabsolute", (event) => {
         } else {
             console.log("DeviceOrientationEvent.requestPermission is not required or not supported.");
         }
-
-        // Check if the device supports DeviceOrientationEvent
-        /*if (window.DeviceOrientationEvent) {
-            document.getElementById("support").textContent = "DeviceOrientationEvent is supported!";
-
-            // Add event listener
-            window.addEventListener("deviceorientation", (event) => {
-                console.error("deviceorientation --HIT");
-                const { alpha, beta, gamma } = event;
-                console.error("alpha=" + alpha);
-                // Update the values on the page
-                document.getElementById("alpha").textContent = `Alpha: ${alpha.toFixed(2)}°`;
-                document.getElementById("beta").textContent = `Beta: ${beta.toFixed(2)}°`;
-                document.getElementById("gamma").textContent = `Gamma: ${gamma.toFixed(2)}°`;
-            });
-        } else {
-            document.getElementById("support").textContent = "DeviceOrientationEvent is NOT supported on this device.";
-        }*/
+*/
     </script>
 </body>
 </html>
