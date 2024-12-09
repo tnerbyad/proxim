@@ -21,7 +21,7 @@
             background-color: black;
             color: white;
         }
-        #dist {
+        #distance_to_target {
             font-size: 6rem;
         }
         #compass-container {
@@ -43,9 +43,10 @@
         <p id="distance_to_target">distance_to_target</p>
     </div>
     <div id="bearing_to_target">bearing_to_target</div>
-    <div id="device_orientation">device_orientation</div>
+    <div id="device_orientation_alpha">device_orientation</div>
     <div id="current_lattitude">current_lattitude</div>
     <div id="current_longitude">current_longitude</div>
+    <button id="requestPermissionButton">??</button>
 
     <script>
         const _location = {{ location | tojson }};
@@ -57,6 +58,59 @@
         const secondClue = _location.second_clue;
 
         let currentHeading = 0; // Stores the device heading
+
+        document.querySelector("#requestPermissionButton").addEventListener("click", () => {
+            if (typeof DeviceOrientationEvent.requestPermission === "function") {
+                // If requestPermission is supported
+                DeviceOrientationEvent.requestPermission()
+                    .then((state) => {
+                        if (state === "granted") {
+                            console.log("Permission granted!");
+                            startListeningForOrientation();
+                        } else {
+                            console.log("Permission denied.");
+                        }
+                    })
+                    .catch((error) => console.error("Error requesting permission:", error));
+            } else {
+                // If requestPermission is not supported
+                console.log("requestPermission is not supported on this browser.");
+                startListeningForOrientation();
+            }
+        });
+
+        function startListeningForOrientation() {
+            if (window.DeviceOrientationEvent) {
+                window.addEventListener("deviceorientation", (event) => {
+                    const { alpha, beta, gamma } = event;
+                    document.getElementById("device_orientation_alpha").textContent = `${alpha !== null ? alpha.toFixed(0) : ""}`;
+                });
+            } else {
+                console.log("DeviceOrientationEvent is not supported on this device.");
+            }
+        }
+
+        /*// Add DeviceOrientation listener
+        if (window.DeviceOrientationEvent) {
+            console.error("ADDING DEVICE_ORIENTATION_EVENT LISTENER...")
+            window.addEventListener("deviceorientation", (event) => {
+                const heading = event.alpha || 0; // Alpha represents the compass heading
+                currentHeading = heading; // Update the global heading
+
+                //const userLat = parseFloat(document.getElementById("user-lat").innerText.split(": ")[1]) || 0;
+                //const userLon = parseFloat(document.getElementById("user-lon").innerText.split(": ")[1]) || 0;
+                //updateCompass(userLat, userLon); // Update compass direction
+            });
+        } else {
+            console.error(" FAILED TO ADDDEVICE_ORIENTATION_EVENT LISTENER...");
+            console.error("DeviceOrientationEvent is not supported by this browser.");
+        }/*
+
+        /*window.addEventListener("deviceorientationabsolute", (event) => {
+            const { alpha, beta, gamma } = event;
+            console.log("Absolute Orientation: ", alpha, beta, gamma);
+        });
+            */
 
         function calculateDistance(lat1, lon1, lat2, lon2) {
             console.error ("calculateDistance(lat1: " + lat1 + ", long1:" +lon1 + " | lat2:" + lat2 + ", long2:" + lon2 + ")");
@@ -120,23 +174,7 @@
         }
 
 
-        // Add DeviceOrientation listener
-        if (window.DeviceOrientationEvent) {
-            console.error("ADDING DEVICE_ORIENTATION_EVENT LISTENER...")
-            window.addEventListener("deviceorientation", (event) => {
-                const heading = event.alpha || 0; // Alpha represents the compass heading
-                currentHeading = heading; // Update the global heading
-
-                //const userLat = parseFloat(document.getElementById("user-lat").innerText.split(": ")[1]) || 0;
-                //const userLon = parseFloat(document.getElementById("user-lon").innerText.split(": ")[1]) || 0;
-                //updateCompass(userLat, userLon); // Update compass direction
-            });
-        } else {
-            console.error(" FAILED TO ADDDEVICE_ORIENTATION_EVENT LISTENER...");
-            console.error("DeviceOrientationEvent is not supported by this browser.");
-        }
-
-        function enableDeviceOrientation()
+       /* function enableDeviceOrientation()
         {
             console.error("FUNCTION ENABLE_DEVICE_ORIENTATION...");
             if (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function") {
@@ -161,17 +199,17 @@
                 console.error("DeviceOrientationEvent is not supported on this browser.");
             }
             console.error("...EXITING FUNCTION ENABLE_DEVICE_ORIENTATION...");
-        }
+        }*/
 
-        function handleOrientationEvent(event) {
+        /*function handleOrientationEvent(event) {
             console.error("FUNCTION HANDLE_ORIENTATION_EVENT...");
             const heading = event.alpha; // Alpha is the compass heading
 
             console.error("heading: " + heading);
             console.error("...EXITING FUNCTION HANDLE_ORIENTATION_EVENT");
-        }
+        }*/
 
-        enableDeviceOrientation();
+        //enableDeviceOrientation();
         setInterval(updateDisplay, 2000);
 
     </script>
