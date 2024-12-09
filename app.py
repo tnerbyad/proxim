@@ -47,6 +47,9 @@ LOCATIONS = [
 def home():
     return render_template("home.html")
 
+def device():
+    return render_template("device.html")
+
 @app.route("/location/<int:location_id>", methods=["GET", "POST"])
 def location_page(location_id):
     if location_id < 1 or location_id > len(LOCATIONS):
