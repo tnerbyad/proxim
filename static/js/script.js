@@ -31,21 +31,61 @@ function calculateBearing(lat1, lon1, lat2, lon2) {
     return (bearing + 360) % 360;
 }
 
-function startListeningForOrientation() {
+/*function startListeningForOrientation() {
     console.log("In Function startListeningForOrientation...");
     if (window.DeviceOrientationEvent) {
         window.addEventListener("deviceorientation", (event) => {
             //Device Orientation is alpha
             const { alpha, beta, gamma } = event;
             document.getElementById("device_orientation_alpha").textContent = `${alpha !== null ? alpha.toFixed(2) : ""}`;
+            document.getElementById("device_orientation_beta").textContent = `${beta != null ? beta.toFixed(2) : ""}`;
+            document.getElementById("device_orientation_gamma").textContent = `${gamma != null ? gamma.toFixed(2) : ""}`;
         });
     } else {
         console.error("DeviceOrientationEvent is not supported on this device.");
     }
     console.log("...Exiting Function startListeningForOrientation");
+}*/
+
+function startListeningForOrientation() {
+    console.log("In Function startListeningForOrientation...");
+
+    const handleOrientation = (event) => {
+        const { alpha, beta, gamma } = event;
+
+        const alphaElement = document.getElementById("device_orientation_alpha");
+        if (alphaElement) {
+            alphaElement.textContent = `${alpha != null ? alpha.toFixed(2) : ""}`;
+        } else {
+            console.error("Element 'device_orientation_alpha' not found.");
+        }
+
+        const betaElement = document.getElementById("device_orientation_beta");
+        if (betaElement) {
+            betaElement.textContent = `${beta != null ? beta.toFixed(2) : ""}`;
+        } else {
+            console.error("Element 'device_orientation_beta' not found.");
+        }
+
+        const gammaElement = document.getElementById("device_orientation_gamma");
+        if (gammaElement) {
+            gammaElement.textContent = `${gamma != null ? gamma.toFixed(2) : ""}`;
+        } else {
+            console.error("Element 'device_orientation_gamma' not found.");
+        }
+    };
+
+    if (window.DeviceOrientationEvent) {
+        window.removeEventListener("deviceorientation", handleOrientation); // Prevent duplicate listeners
+        window.addEventListener("deviceorientation", handleOrientation);
+    } else {
+        console.error("DeviceOrientationEvent is not supported on this device.");
+    }
+
+    console.log("...Exiting Function startListeningForOrientation");
 }
 
-function updateDisplay()
+/*function updateDisplay()
 {
     if (navigator.geolocation) {
         navigator.geolocation.watchPosition(
@@ -101,21 +141,58 @@ function updateDisplay()
             (error) => {
                 console.error("Geolocation error code:", error.code);
                 console.error("Geolocation error message:", error.message);
+            },
+            { enableHighAccuracy: true }
+        );
+    } else {
+        console.error("Geolocation is not supported by your browser.");
+    }
+}
+*/
+function updateDisplay() {
+    if (navigator.geolocation) {
+        navigator.geolocation.watchPosition(
+            (position) => {
+                const userLat = position.coords.latitude;
+                const userLon = position.coords.longitude;
 
-                switch (error.code) {
-                    case 1:
-                        alert("Permission denied. Please enable location services.");
-                        break;
-                    case 2:
-                        alert("Position unavailable. Try again later.");
-                        break;
-                    case 3:
-                        alert("Location request timed out. Please check your internet and GPS.");
-                        break;
-                    default:
-                        alert("An unknown error occurred.");
-                        break;
+                if (!locationData) {
+                    console.error("Location data is not available.");
+                    return;
                 }
+
+                const distToTarget = calculateDistance(userLat, userLon, locationData.lat, locationData.lon);
+                const bearingToTarget = calculateBearing(userLat, userLon, locationData.lat, locationData.lon);
+
+                document.getElementById("current_lattitude").innerText = userLat.toFixed(0);
+                document.getElementById("current_longitude").innerText = userLon.toFixed(0);
+                document.getElementById("distance_to_target").innerText = distToTarget.toFixed(0);
+                document.getElementById("bearing_to_target").innerText = bearingToTarget.toFixed(0);
+
+                const alphaText = document.getElementById("device_orientation_alpha").textContent;
+                const alphaNumber = parseFloat(alphaText);
+                let direction_offset = 0;
+
+                if (!isNaN(bearingToTarget) && !isNaN(alphaNumber)) {
+                    direction_offset = bearingToTarget - alphaNumber;
+                } else if (!isNaN(bearingToTarget)) {
+                    direction_offset = bearingToTarget;
+                } else if (!isNaN(alphaNumber)) {
+                    direction_offset = alphaNumber;
+                } else {
+                    console.error("Both bearing and alpha are invalid.");
+                }
+                document.getElementById("direction_offset").innerText = direction_offset.toFixed(0);
+
+                if (distToTarget <= locationData.proximity2) {
+                    document.getElementById("clue").innerText = locationData.second_clue;
+                } else if (distToTarget <= locationData.proximity1) {
+                    document.getElementById("clue").innerText = locationData.first_clue;
+                }
+            },
+            (error) => {
+                console.error("Geolocation error code:", error.code);
+                console.error("Geolocation error message:", error.message);
             },
             { enableHighAccuracy: true }
         );
@@ -129,7 +206,6 @@ document.getElementById("requestPermissionButton").addEventListener("click", fun
 });
 
 document.querySelector("#requestPermissionButton").addEventListener("click", () => {
-
     if (typeof DeviceOrientationEvent.requestPermission === "function") {
         // If requestPermission is supported
         DeviceOrientationEvent.requestPermission()
@@ -147,7 +223,6 @@ document.querySelector("#requestPermissionButton").addEventListener("click", () 
         console.log("requestPermission is not supported on this browser.");
         startListeningForOrientation();
     }
-    //this.style.display = "none"; // Hides the button
 });
 
 setInterval(updateDisplay, proximityCheckInterval);

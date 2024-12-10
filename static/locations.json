@@ -1,6 +1,6 @@
 [
     {
-        "name": "test1",
+        "name": "location1",
         "description": "Angies",
         "lat": 41.80912095171537,
         "lon": -111.79729503176156,
@@ -9,10 +9,10 @@
         "first_clue": "clue 1Eat the kitchen sink",
         "second_clue": "clue two cost with tax - is magic box showing",
         "magic_input": "$11.33",
-        "next": "/location3"
+        "next": "/location2"
     },
     {
-        "name": "location1",
+        "name": "location2",
         "description": "Angies",
         "lat": 41.77737117328678,
         "lon": -111.80637179308403,
@@ -24,7 +24,7 @@
         "next": "/location3"
     },
     {
-        "name": "location2",
+        "name": "location3",
         "description": "hyde park, city hall",
         "lat": 41.79938501121729,
         "lon": -111.81619927128764,
@@ -33,10 +33,10 @@
         "first_clue": "You're getting warmer! Look for a playground",
         "second_clue": "Almost there! The magic word is hidden in plain sight.",
         "magic_input": "Hyde Park",
-        "next": "/loc2"
+        "next": "/location4"
     },
     {
-        "name": "location3",
+        "name": "location4",
         "description": "chickafila",
         "lat": 41.75632177398785,
         "lon": -111.8348008765066,
