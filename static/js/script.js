@@ -86,7 +86,10 @@ function updateDisplay() {
 
                 //for debugging
                 if (debug_dist != 0)
+                {
+                    debug("in debug_dist check (script.js)");
                     distToTarget = debug_dist;
+                }
 
                 document.getElementById("current_lattitude").innerText = userLat.toFixed(0);
                 document.getElementById("current_longitude").innerText = userLon.toFixed(0);
@@ -162,3 +165,10 @@ document.querySelector("#requestPermissionButton").addEventListener("click", () 
 });
 
 setInterval(updateDisplay, proximityCheckInterval);
+
+
+function debug(msg){
+     const debug_element = document.getElementById("debug");
+
+     debug_element.innerHTML += msg + "<br>";
+}

@@ -21,6 +21,13 @@
             text-align: center; /* Center-align text */
             font-family: monospace; /* Font for numbers */
         }
+        #debug
+        {
+            flex-direction: column;
+            justify-content: left;
+            background-color: grey;
+            color:black;
+        }
         #div_magic_input {
             display: none;
         }
@@ -81,7 +88,7 @@
     <!--for debugging-->
     <div id="div_dist_override">
         <label for="label_dist_override">dist=</label>
-        <input type="text" id="input_dist_override" placeholder="null" />
+        <input type="text" id="input_dist_override" placeholder="0" />
         <button id="button_dist_override">dist</button>
     </div>
 
@@ -91,18 +98,29 @@
         <button id="buttonSendMagic">Set Variable from Input</button>
     </div>
 
+    <div id="debug"></div>
     <script>
         let debug_dist = 0;
 
         document.getElementById("button_dist_override").addEventListener("click", () => {
             const inputValText = document.getElementById("input_dist_override").value;
+            debug("inputValText=" + inputValText);
             const inputValNum = parseFloat(inputValText);
-            debug_dist = inputValNum;
+            if (isNaN(inputValNum))
+            {
+                debug ("debug_dist not a number.  set to zero");
+                debug_dist = 0;
+            }
+            else{
+                debug_dist = inputValNum;
+                debug("debug distance = " + debug_dist);
+            }
+
         });
 
         document.getElementById("buttonSendMagic").addEventListener("click", () => {
             const inputMagic = document.getElementById("inputBoxMagic").value;
-            alert("magic=" + inputMagic);
+            debug("magic=" + inputMagic);
             if (inputMagic == locationData.magic_input )
             {
                 alert ('congratulations.  you did it!');
