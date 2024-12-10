@@ -84,6 +84,10 @@ function updateDisplay() {
                 const distToTarget = calculateDistance(userLat, userLon, locationData.lat, locationData.lon);
                 const bearingToTarget = calculateBearing(userLat, userLon, locationData.lat, locationData.lon);
 
+                //for debugging
+                if (debug_dist != 0)
+                    distToTarget = debug_dist;
+
                 document.getElementById("current_lattitude").innerText = userLat.toFixed(0);
                 document.getElementById("current_longitude").innerText = userLon.toFixed(0);
                 document.getElementById("distance_to_target").innerText = distToTarget.toFixed(0);
@@ -106,7 +110,7 @@ function updateDisplay() {
 
                 const clueElement = document.getElementById("clue");
 
-                if (distToTarget <= locationData.proximity2 || (debug_prox2 != null)) {
+                if (distToTarget <= locationData.proximity2) {
                     //really close, show final clue and text box and
                     clueElement.innerText = locationData.second_clue;
                     const clue_div = document.getElementById("div_magic_input");
@@ -118,7 +122,7 @@ function updateDisplay() {
                     clue_div.style.border = "2px solid black";     // Add border
 
 
-                } else if (distToTarget <= locationData.proximity1 || (debug_prox1 != null)) {
+                } else if (distToTarget <= locationData.proximity1) {
                     clueElement.getElementById("clue").innerText = locationData.first_clue;
                 }
             },

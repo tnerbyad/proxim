@@ -16,7 +16,7 @@
             justify-content: center; /* Center elements vertically */
             align-items: center; /* Center elements horizontally */
             border-radius: 50%; /* Makes the container circular */
-            background-color: green; /* Circle background color */
+            background-color: pink; /* Circle background color */
             color: white; /* Text color */
             text-align: center; /* Center-align text */
             font-family: monospace; /* Font for numbers */
@@ -79,16 +79,10 @@
     <div id="clue"></div>
 
     <!--for debugging-->
-    <div id="div_debugProx1">
-        <label for="inputProx1">prox1=</label>
-        <input type="text" id="inputProx1" placeholder="null" />
-        <button id="buttonProx1">prox1</button>
-    </div>
-
-    <div id="div_debugProx2">
-        <label for="inputProx2">prox2=</label>
-        <input type="text" id="inputProx2" placeholder="null" />
-        <button id="buttonProx2">prox2</button>
+    <div id="div_dist_override">
+        <label for="label_dist_override">dist=</label>
+        <input type="text" id="input_dist_override" placeholder="null" />
+        <button id="button_dist_override">dist</button>
     </div>
 
     <div id="div_magic_input">
@@ -98,19 +92,12 @@
     </div>
 
     <script>
-        let debug_prox1 = null;
-        let debug_prox2 = null;
+        let debug_dist = 0;
 
-        document.getElementById("buttonProx1").addEventListener("click", () => {
-            const inputValText = document.getElementById("inputProx1").value;
+        document.getElementById("button_dist_override").addEventListener("click", () => {
+            const inputValText = document.getElementById("input_dist_override").value;
             const inputValNum = parseFloat(inputValText);
-            debug_prox1 = inputValNum;
-        });
-
-        document.getElementById("buttonProx2").addEventListener("click", () => {
-            const inputValText = document.getElementById("inputProx2").value;
-            const inputValNum = parseFloat(inputValText);
-            debug_prox2 = inputValNum;
+            debug_dist = inputValNum;
         });
 
         document.getElementById("buttonSendMagic").addEventListener("click", () => {
