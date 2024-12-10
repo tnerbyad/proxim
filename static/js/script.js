@@ -55,7 +55,7 @@ function updateDisplay()
 
                 //Ensure location data is defined
                 if (!locationData){
-                    console.err ("Location data is not available");
+                    console.error ("Location data is not available");
                     return;
                 }
 
@@ -90,18 +90,32 @@ function updateDisplay()
                 }
                 document.getElementById("direction_offset").innerText = direction_offset.toFixed(0);
 
-                //if (distToTarget <= targetProximity2) {
                 if (distToTarget <= locationData.proximity2) {
                     console.log("WITHIN PROXIMITY 2 -- REALLY CLOSE");
-                    document.getElementById("clue").innerText = secondClue;
-               // } else if (distToTarget <= targetProximity1) {
+                    document.getElementById("clue").innerText = locationData.second_clue;
                 } else if (distToTarget <= locationData.proximity1) {
                     console.log("WITHIN PROXIMITY 1 -- APPROACHING DESTINATION");
-                    document.getElementById("clue").innerText = firstClue;
+                    document.getElementById("clue").innerText = locationData.first_clue;
                 }
             },
             (error) => {
-                console.error("Geolocation error:", error);
+                console.error("Geolocation error code:", error.code);
+                console.error("Geolocation error message:", error.message);
+
+                switch (error.code) {
+                    case 1:
+                        alert("Permission denied. Please enable location services.");
+                        break;
+                    case 2:
+                        alert("Position unavailable. Try again later.");
+                        break;
+                    case 3:
+                        alert("Location request timed out. Please check your internet and GPS.");
+                        break;
+                    default:
+                        alert("An unknown error occurred.");
+                        break;
+                }
             },
             { enableHighAccuracy: true }
         );
