@@ -25,10 +25,10 @@
             font-size: 6rem; /* Large text for distance */
             margin: 0; /* Removes default margin */
         }
-
-        #bearing_to_target {
+        #bearing_to_target, #device_orientation, #current_lattitude, #current_longitude {
             font-size: 2rem; /* Smaller text for bearing */
             margin: 0; /* Removes default margin */
+            display: none;
         }
         #compass-container {
             position: relative;
@@ -59,15 +59,15 @@
 <body>
     <div id="dist-container">
         <div id="distance_to_target"></div>
-        <div>
-            <p id="bearing_to_target"></p>  <p id="device_orientation_alpha"></p>
-        </div>
+        <div id="direction_offset"></div>
         <div>
             <button id="requestPermissionButton">?</button>
         </div>
+        </div>
     </div>
-    <br>
 
+    <!-- hidden variables -->
+    <div id="bearing_to_target"></div>
     <p id="device_orientation_alpha"></p>
     <div id="current_lattitude"></div>
     <div id="current_longitude"></div>

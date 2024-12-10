@@ -5,7 +5,7 @@ const proximityCheckInterval = 1000; // Check every 1 second
 
 //calculate distance in feet
 function calculateDistance(lat1, lon1, lat2, lon2) {
-    console.error ("calculateDistance(lat1: " + lat1 + ", long1:" +lon1 + " | lat2:" + lat2 + ", long2:" + lon2 + ")");
+    console.log ("calculateDistance(lat1: " + lat1 + ", long1:" +lon1 + " | lat2:" + lat2 + ", long2:" + lon2 + ")");
     const R = 20900999; // Radius in feet
     const dLat = (lat2 - lat1) * (Math.PI / 180);
     const dLon = (lon2 - lon1) * (Math.PI / 180);
@@ -18,8 +18,8 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
 
 //calculate the direction in degreese between two points
 function calculateBearing(lat1, lon1, lat2, lon2) {
-    console.error ("calculateBearing(lat1: " + lat1 + ", long1:" +lon1 + " | lat2:" + lat2 + ", long2:" + lon2 + ")");
-    console.error ("lat1: " + lat1 + ", long1:" +lon1 + " | lat2:" + lat2 + ", long2:" + lon2);
+    console.log ("calculateBearing(lat1: " + lat1 + ", long1:" +lon1 + " | lat2:" + lat2 + ", long2:" + lon2 + ")");
+    console.log ("lat1: " + lat1 + ", long1:" +lon1 + " | lat2:" + lat2 + ", long2:" + lon2);
     const dLon = (lon2 - lon1) * (Math.PI / 180);
     lat1 = lat1 * (Math.PI / 180);
     lat2 = lat2 * (Math.PI / 180);
@@ -34,11 +34,12 @@ function startListeningForOrientation() {
     console.log("In Function startListeningForOrientation...");
     if (window.DeviceOrientationEvent) {
         window.addEventListener("deviceorientation", (event) => {
+            //Device Orientation is alpha
             const { alpha, beta, gamma } = event;
-            document.getElementById("device_orientation_alpha").textContent = `${alpha !== null ? alpha.toFixed(0) : ""}`;
+            document.getElementById("device_orientation_alpha").textContent = `${alpha !== null ? alpha.toFixed(2) : ""}`;
         });
     } else {
-        console.log("DeviceOrientationEvent is not supported on this device.");
+        console.error("DeviceOrientationEvent is not supported on this device.");
     }
     console.log("...Exiting Function startListeningForOrientation");
 }
@@ -50,18 +51,47 @@ function updateDisplay()
             (position) => {
                 const userLat = position.coords.latitude;
                 const userLon = position.coords.longitude;
-                //const distToTarget = calculateDistance(userLat, userLon, targetLat, targetLon);
-                //const bearingToTarget = calculateBearing(userLat, userLon, targetLat, targetLon)
                 const distToTarget = calculateDistance(userLat, userLon, locationData.lat, locationData.lon);
-                const bearingToTarget = calculateBearing(userLat, userLon, locationData.lat, locationData.lon)
+                const bearingToTarget = calculateBearing(userLat, userLon, locationData.lat, locationData.lon);
 
-                console.log ("distToTarget=" + distToTarget + " | bearingToTarget=" + bearingToTarget);
-                document.getElementById("distance_to_target").innerText = distToTarget.toFixed(0);
-                document.getElementById("bearing_to_target").innerText = bearingToTarget.toFixed(0);//bearing.toFixed(0);
+                //hold values in case needed
+                document.getElementById("current_lattitude").innerText = userLat.toFixed(0);
+                document.getElementById("current_longitude").innerText = userLon.toFixed(0);
+                document.getElementById("distance_to_target").innerText = distToTarget.toFixed(0); //only one also displayed
+                document.getElementById("bearing_to_target").innerText = bearingToTarget.toFixed(0);
+
+                //Check for an alpha value if supported on device or permission granted by user
+                const alpha = document.getElementById("device_orientation_alpha").textContent;
+                const alphaNumber = parseFloat(alpha);
+
+                console.log('distanceToTarget=${distToTarget}, bearingToTarget=${bearingToTarget}, alpha=${alphaNumber}');
+
+                //Calculate the direction offset
+                if (!isNaN(bearingToTarget) && ((alphaNumber != null) && !isNaN(alphaNumber)))
+                {
+                    console.log ("both bearing_to_target and alpha are valid number.  CALCULATING DIRECTION OFFSET...");
+                    document.getElementById("direction_offset").innerText = (bearingToTarget - alphaNumber).toFixed(0);
+                    console.log ("...Finished calculating CALCULATING DIRECTION OFFSET");
+                }
+                else if (!isNaN(bearingToTarget) && !((alphaNumber != null) && !isNaN(alphaNumber)))
+                {
+                    console.log ("bearing_to_target is good, alpha is not valid.  CALCULATING DIRECTION OFFSET...");
+                    document.getElementById("direction_offset").innerText = bearingToTarget.toFixed(0);
+                    console.log ("...Finished calculating CALCULATING DIRECTION OFFSET");
+                }
+                else if (isNaN(bearingToTarget) && ((alphaNumber != null) && !isNaN(alphaNumber)))
+                {
+                    console.log ("bearing_to_target is not good, alpha is valid.  CALCULATING DIRECTION OFFSET...");
+                    document.getElementById("direction_offset").innerText = alpha.toFixed(0);
+                    console.log ("...Finished calculating CALCULATING DIRECTION OFFSET");
+                } else
+                {
+                    console.log("SOMETHING WRONG.  Both bearing_to_target and alpha are bad.");
+                }
 
                 //if (distToTarget <= targetProximity2) {
                 if (distToTarget <= locationData.proximity2) {
-                    console.error("WITHIN PROXIMITY 2 -- REALLY CLOSE");
+                    console.log("WITHIN PROXIMITY 2 -- REALLY CLOSE");
                     document.getElementById("clue").innerText = secondClue;
                // } else if (distToTarget <= targetProximity1) {
                 } else if (distToTarget <= locationData.proximity1) {
