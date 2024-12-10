@@ -1,5 +1,3 @@
-alert('pizza');
-
 let userVisited = [];
 const proximityCheckInterval = 1000; // Check every 1 second
 
@@ -106,10 +104,22 @@ function updateDisplay() {
                 }
                 document.getElementById("direction_offset").innerText = direction_offset.toFixed(0);
 
-                if (distToTarget <= locationData.proximity2) {
-                    document.getElementById("clue").innerText = locationData.second_clue;
-                } else if (distToTarget <= locationData.proximity1) {
-                    document.getElementById("clue").innerText = locationData.first_clue;
+                const clueElement = document.getElementById("clue");
+
+                if (distToTarget <= locationData.proximity2 || (debug_prox2 != null)) {
+                    //really close, show final clue and text box and
+                    clueElement.innerText = locationData.second_clue;
+                    const clue_div = document.getElementById("div_magic_input");
+
+                    // Change the style of the div
+                    clue_div.style.backgroundColor = "lightblue";  // Change background color
+                    clue_div.style.fontSize = "20px";               // Change font size
+                    clue_div.style.padding = "10px";                // Add padding
+                    clue_div.style.border = "2px solid black";     // Add border
+
+
+                } else if (distToTarget <= locationData.proximity1 || (debug_prox1 != null)) {
+                    clueElement.getElementById("clue").innerText = locationData.first_clue;
                 }
             },
             (error) => {

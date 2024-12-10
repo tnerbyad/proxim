@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ location.name }}</title>
+    <link rel="icon" href="data:,">
     <link rel="stylesheet" href="{{ url_for('static', filename='/css/style.css') }}">
 
     <style>
@@ -20,12 +21,14 @@
             text-align: center; /* Center-align text */
             font-family: monospace; /* Font for numbers */
         }
-
+        #div_magic_input {
+            display: none;
+        }
         #distance_to_target {
             font-size: 4rem; /* Large text for distance */
             margin: 0; /* Removes default margin */
         }
-        #bearing_to_target, #device_orientation, #current_lattitude, #current_longitude,#device_orientation_beta, #device_orientation_gamma {
+        #bearing_to_target, #current_lattitude, #current_longitude,#device_orientation_alpha, #device_orientation_beta, #device_orientation_gamma {
             font-size: 2rem; /* Smaller text for bearing */
             margin: 0; /* Removes default margin */
             display: none;
@@ -74,6 +77,59 @@
     <div id="device_orientation_gamma"></div>
 
     <div id="clue"></div>
+
+    <!--for debugging-->
+    <div id="div_debugProx1">
+        <label for="inputProx1">prox1=</label>
+        <input type="text" id="inputProx1" placeholder="null" />
+        <button id="buttonProx1">prox1</button>
+    </div>
+
+    <div id="div_debugProx2">
+        <label for="inputProx2">prox2=</label>
+        <input type="text" id="inputProx2" placeholder="null" />
+        <button id="buttonProx2">prox2</button>
+    </div>
+
+    <div id="div_magic_input">
+        <label for="inputMagic">To proceed, enter the magic clue:</label>
+        <input type="text" id="inputBoxMagic" placeholder="Type something..." />
+        <button id="buttonSendMagic">Set Variable from Input</button>
+    </div>
+
+    <script>
+        let debug_prox1 = null;
+        let debug_prox2 = null;
+
+        document.getElementById("buttonProx1").addEventListener("click", () => {
+            const inputValText = document.getElementById("inputProx1").value;
+            const inputValNum = parseFloat(inputValText);
+            debug_prox1 = inputValNum;
+        });
+
+        document.getElementById("buttonProx2").addEventListener("click", () => {
+            const inputValText = document.getElementById("inputProx2").value;
+            const inputValNum = parseFloat(inputValText);
+            debug_prox2 = inputValNum;
+        });
+
+        document.getElementById("buttonSendMagic").addEventListener("click", () => {
+            const inputMagic = document.getElementById("inputBoxMagic").value;
+            alert("magic=" + inputMagic);
+            if (inputMagic == locationData.magic_input )
+            {
+                alert ('congratulations.  you did it!');
+            }
+            else
+            {
+                alert('sorry, try again');
+                userVisited.push(locationData.name);
+            }
+        });
+
+
+
+    </script>
 
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
