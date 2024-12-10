@@ -1,3 +1,5 @@
+alert('pizza');
+
 let userVisited = [];
 const proximityCheckInterval = 1000; // Check every 1 second
 
@@ -30,22 +32,6 @@ function calculateBearing(lat1, lon1, lat2, lon2) {
     console.log ("...FINSIHED CALCULATING BEARING");
     return (bearing + 360) % 360;
 }
-
-/*function startListeningForOrientation() {
-    console.log("In Function startListeningForOrientation...");
-    if (window.DeviceOrientationEvent) {
-        window.addEventListener("deviceorientation", (event) => {
-            //Device Orientation is alpha
-            const { alpha, beta, gamma } = event;
-            document.getElementById("device_orientation_alpha").textContent = `${alpha !== null ? alpha.toFixed(2) : ""}`;
-            document.getElementById("device_orientation_beta").textContent = `${beta != null ? beta.toFixed(2) : ""}`;
-            document.getElementById("device_orientation_gamma").textContent = `${gamma != null ? gamma.toFixed(2) : ""}`;
-        });
-    } else {
-        console.error("DeviceOrientationEvent is not supported on this device.");
-    }
-    console.log("...Exiting Function startListeningForOrientation");
-}*/
 
 function startListeningForOrientation() {
     console.log("In Function startListeningForOrientation...");
@@ -85,70 +71,6 @@ function startListeningForOrientation() {
     console.log("...Exiting Function startListeningForOrientation");
 }
 
-/*function updateDisplay()
-{
-    if (navigator.geolocation) {
-        navigator.geolocation.watchPosition(
-            (position) => {
-                const userLat = position.coords.latitude;
-                const userLon = position.coords.longitude;
-
-                //Ensure location data is defined
-                if (!locationData){
-                    console.error ("Location data is not available");
-                    return;
-                }
-
-                const distToTarget = calculateDistance(userLat, userLon, locationData.lat, locationData.lon);
-                const bearingToTarget = calculateBearing(userLat, userLon, locationData.lat, locationData.lon);
-
-                //hold values in case needed
-                document.getElementById("current_lattitude").innerText = userLat.toFixed(0);
-                document.getElementById("current_longitude").innerText = userLon.toFixed(0);
-                document.getElementById("distance_to_target").innerText = distToTarget.toFixed(0); //only one also displayed
-                document.getElementById("bearing_to_target").innerText = bearingToTarget.toFixed(0);
-
-                //Check for an alpha value if supported on device or permission granted by user
-                const alphaText = document.getElementById("device_orientation_alpha").textContent;
-                const alphaNumber = parseFloat(alphaText);
-                let direction_offset=0;
-
-                console.log(`distanceToTarget=${distToTarget}, bearingToTarget=${bearingToTarget}, alpha=${alphaNumber}`);
-
-                //Calculate the direction offset
-                if (!isNaN(bearingToTarget) && !isNaN(alphaNumber)) {
-                    direction_offset = bearingToTarget - alphaNumber;
-                    console.log ("Calculating direction_offset based on bearing_to_target and alapha");
-                } else if (!isNaN(bearingToTarget)) {
-                    direction_offset = bearingToTarget;
-                    console.log ("Calculating direction_offset based on bearing_to_target");
-                } else if (!isNaN(alphaNumber)) {
-                    direction_offset = alphaNumber;
-                    console.log ("Calculating direction_offset based on alapha");
-                } else {
-                    console.error("Both bearing and alpha are invalid.");
-                }
-                document.getElementById("direction_offset").innerText = direction_offset.toFixed(0);
-
-                if (distToTarget <= locationData.proximity2) {
-                    console.log("WITHIN PROXIMITY 2 -- REALLY CLOSE");
-                    document.getElementById("clue").innerText = locationData.second_clue;
-                } else if (distToTarget <= locationData.proximity1) {
-                    console.log("WITHIN PROXIMITY 1 -- APPROACHING DESTINATION");
-                    document.getElementById("clue").innerText = locationData.first_clue;
-                }
-            },
-            (error) => {
-                console.error("Geolocation error code:", error.code);
-                console.error("Geolocation error message:", error.message);
-            },
-            { enableHighAccuracy: true }
-        );
-    } else {
-        console.error("Geolocation is not supported by your browser.");
-    }
-}
-*/
 function updateDisplay() {
     if (navigator.geolocation) {
         navigator.geolocation.watchPosition(
