@@ -1,3 +1,5 @@
+debug ("CHECK VERSIION==PLOP");
+
 let userVisited = [];
 const proximityCheckInterval = 1000; // Check every 1 second
 
