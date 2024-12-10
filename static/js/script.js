@@ -3,8 +3,8 @@ const proximityCheckInterval = 1000; // Check every 1 second
 
 //calculate distance in feet
 function calculateDistance(lat1, lon1, lat2, lon2) {
-    console.log ("CALCULATING DISTANCE...");
-    console.log (`Inputs: ${lat1}, ${lon1}, ${lat2}, ${lon2}`);
+    debug ("CALCULATING DISTANCE...");
+    debug (`Inputs: ${lat1}, ${lon1}, ${lat2}, ${lon2}`);
     const R = 20900999; // Radius in feet
     const dLat = (lat2 - lat1) * (Math.PI / 180);
     const dLon = (lon2 - lon1) * (Math.PI / 180);
@@ -12,14 +12,14 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
             Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
             Math.sin(dLon / 2) ** 2;
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    console.log ("...FINISHED CALCULATING DISTANCE");
+    debug ("...FINISHED CALCULATING DISTANCE");
     return Math.round(R * c);
 }
 
 //calculate the direction in degreese between two points
 function calculateBearing(lat1, lon1, lat2, lon2) {
-    console.log ("CALCULATE BEARING...");
-    console.log (`INPUTS: ${lat1}, ${lon1}, ${lat2}, ${lon2}`);
+    debug ("CALCULATE BEARING...");
+    debug (`INPUTS: ${lat1}, ${lon1}, ${lat2}, ${lon2}`);
     const dLon = (lon2 - lon1) * (Math.PI / 180);
     lat1 = lat1 * (Math.PI / 180);
     lat2 = lat2 * (Math.PI / 180);
@@ -27,12 +27,12 @@ function calculateBearing(lat1, lon1, lat2, lon2) {
     const y = Math.sin(dLon) * Math.cos(lat2);
     const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
     const bearing = Math.atan2(y, x) * (180 / Math.PI);
-    console.log ("...FINSIHED CALCULATING BEARING");
+    debug ("...FINSIHED CALCULATING BEARING");
     return (bearing + 360) % 360;
 }
 
 function startListeningForOrientation() {
-    console.log("In Function startListeningForOrientation...");
+    debug("In Function startListeningForOrientation...");
 
     const handleOrientation = (event) => {
         const { alpha, beta, gamma } = event;
@@ -66,7 +66,7 @@ function startListeningForOrientation() {
         console.error("DeviceOrientationEvent is not supported on this device.");
     }
 
-    console.log("...Exiting Function startListeningForOrientation");
+    debug ("...Exiting Function startListeningForOrientation");
 }
 
 function updateDisplay() {
@@ -107,13 +107,15 @@ function updateDisplay() {
                 } else if (!isNaN(alphaNumber)) {
                     direction_offset = alphaNumber;
                 } else {
-                    console.error("Both bearing and alpha are invalid.");
+                    debug("Both bearing and alpha are invalid.");
                 }
                 document.getElementById("direction_offset").innerText = direction_offset.toFixed(0);
 
                 const clueElement = document.getElementById("clue");
 
+                debug ("proximity1=" + locationData.proximity1 + " | proximity2=" + locationData.proximity2);
                 if (distToTarget <= locationData.proximity2) {
+                    debug ("in proximity 2 code");
                     //really close, show final clue and text box and
                     clueElement.innerText = locationData.second_clue;
                     const clue_div = document.getElementById("div_magic_input");
@@ -150,16 +152,16 @@ document.querySelector("#requestPermissionButton").addEventListener("click", () 
         DeviceOrientationEvent.requestPermission()
             .then((state) => {
                 if (state === "granted") {
-                    console.log("Permission granted!");
+                    console.log("Device Permission granted!");
                     startListeningForOrientation();
                 } else {
-                    console.log("Permission denied.");
+                    debug("Device Permission denied.");
                 }
             })
             .catch((error) => console.error("Error requesting permission:", error));
     } else {
         // If requestPermission is not supported
-        console.log("requestPermission is not supported on this browser.");
+        debug("requestPermission is not supported on this browser.");
         startListeningForOrientation();
     }
 });
