@@ -4,7 +4,7 @@ import json
 import os
 from geopy.distance import geodesic  # Install via 'pip install geopy'
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 app.secret_key = "your_secret_key_here"  # Replace with a secure key
 
 @app.route("/")
