@@ -63,6 +63,7 @@ function updateDisplay()
                 //Check for an alpha value if supported on device or permission granted by user
                 const alpha = document.getElementById("device_orientation_alpha").textContent;
                 const alphaNumber = parseFloat(alpha);
+                const direction_offset=0;
 
                 console.log('distanceToTarget=${distToTarget}, bearingToTarget=${bearingToTarget}, alpha=${alphaNumber}');
 
@@ -70,24 +71,25 @@ function updateDisplay()
                 if (!isNaN(bearingToTarget) && ((alphaNumber != null) && !isNaN(alphaNumber)))
                 {
                     console.log ("both bearing_to_target and alpha are valid number.  CALCULATING DIRECTION OFFSET...");
-                    document.getElementById("direction_offset").innerText = (bearingToTarget - alphaNumber).toFixed(0);
+                    direction_offset = bearingToTarget - alphaNumber;
                     console.log ("...Finished calculating CALCULATING DIRECTION OFFSET");
                 }
                 else if (!isNaN(bearingToTarget) && !((alphaNumber != null) && !isNaN(alphaNumber)))
                 {
                     console.log ("bearing_to_target is good, alpha is not valid.  CALCULATING DIRECTION OFFSET...");
-                    document.getElementById("direction_offset").innerText = bearingToTarget.toFixed(0);
+                    direction_offset = bearingToTarget;
                     console.log ("...Finished calculating CALCULATING DIRECTION OFFSET");
                 }
                 else if (isNaN(bearingToTarget) && ((alphaNumber != null) && !isNaN(alphaNumber)))
                 {
                     console.log ("bearing_to_target is not good, alpha is valid.  CALCULATING DIRECTION OFFSET...");
-                    document.getElementById("direction_offset").innerText = alpha.toFixed(0);
+                    direction_offset = alphaNumber;
                     console.log ("...Finished calculating CALCULATING DIRECTION OFFSET");
                 } else
                 {
                     console.log("SOMETHING WRONG.  Both bearing_to_target and alpha are bad.");
                 }
+                document.getElementById("direction_offset").innerText = direction_offset.toFixed(0);
 
                 //if (distToTarget <= targetProximity2) {
                 if (distToTarget <= locationData.proximity2) {
