@@ -1,5 +1,3 @@
-debug ("CHECK VERSIION==BUG");
-
 let userVisited = [];
 const proximityCheckInterval = 1000; // Check every 1 second
 
@@ -174,7 +172,7 @@ setInterval(updateDisplay, proximityCheckInterval);
 function debug(msg){
      const debug_element = document.getElementById("debug");
 
-     const curText = dubug_element.innerHTML;
+     const curText = debug_element.innerHTML;
 
      debug_element.innerHTML = msg + "<br>" + curText;
 }
