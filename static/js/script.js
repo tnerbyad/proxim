@@ -1,11 +1,10 @@
-alert('hello world');
-
 let userVisited = [];
 const proximityCheckInterval = 1000; // Check every 1 second
 
 //calculate distance in feet
 function calculateDistance(lat1, lon1, lat2, lon2) {
-    console.log ("calculateDistance(lat1: " + lat1 + ", long1:" +lon1 + " | lat2:" + lat2 + ", long2:" + lon2 + ")");
+    console.log ("CALCULATING DISTANCE...");
+    console.log (`Inputs: ${lat1}, ${lon1}, ${lat2}, ${lon2}`);
     const R = 20900999; // Radius in feet
     const dLat = (lat2 - lat1) * (Math.PI / 180);
     const dLon = (lon2 - lon1) * (Math.PI / 180);
@@ -13,13 +12,14 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
             Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
             Math.sin(dLon / 2) ** 2;
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    console.log ("...FINISHED CALCULATING DISTANCE");
     return Math.round(R * c);
 }
 
 //calculate the direction in degreese between two points
 function calculateBearing(lat1, lon1, lat2, lon2) {
-    console.log ("calculateBearing(lat1: " + lat1 + ", long1:" +lon1 + " | lat2:" + lat2 + ", long2:" + lon2 + ")");
-    console.log ("lat1: " + lat1 + ", long1:" +lon1 + " | lat2:" + lat2 + ", long2:" + lon2);
+    console.log ("CALCULATE BEARING...");
+    console.log (`INPUTS: ${lat1}, ${lon1}, ${lat2}, ${lon2}`);
     const dLon = (lon2 - lon1) * (Math.PI / 180);
     lat1 = lat1 * (Math.PI / 180);
     lat2 = lat2 * (Math.PI / 180);
@@ -27,6 +27,7 @@ function calculateBearing(lat1, lon1, lat2, lon2) {
     const y = Math.sin(dLon) * Math.cos(lat2);
     const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
     const bearing = Math.atan2(y, x) * (180 / Math.PI);
+    console.log ("...FINSIHED CALCULATING BEARING");
     return (bearing + 360) % 360;
 }
 
@@ -51,6 +52,13 @@ function updateDisplay()
             (position) => {
                 const userLat = position.coords.latitude;
                 const userLon = position.coords.longitude;
+
+                //Ensure location data is defined
+                if (!locationData){
+                    console.err ("Location data is not available");
+                    return;
+                }
+
                 const distToTarget = calculateDistance(userLat, userLon, locationData.lat, locationData.lon);
                 const bearingToTarget = calculateBearing(userLat, userLon, locationData.lat, locationData.lon);
 
@@ -61,33 +69,24 @@ function updateDisplay()
                 document.getElementById("bearing_to_target").innerText = bearingToTarget.toFixed(0);
 
                 //Check for an alpha value if supported on device or permission granted by user
-                const alpha = document.getElementById("device_orientation_alpha").textContent;
-                const alphaNumber = parseFloat(alpha);
-                const direction_offset=0;
+                const alphaText = document.getElementById("device_orientation_alpha").textContent;
+                const alphaNumber = parseFloat(alphaText);
+                let direction_offset=0;
 
-                console.log('distanceToTarget=${distToTarget}, bearingToTarget=${bearingToTarget}, alpha=${alphaNumber}');
+                console.log(`distanceToTarget=${distToTarget}, bearingToTarget=${bearingToTarget}, alpha=${alphaNumber}`);
 
                 //Calculate the direction offset
-                if (!isNaN(bearingToTarget) && ((alphaNumber != null) && !isNaN(alphaNumber)))
-                {
-                    console.log ("both bearing_to_target and alpha are valid number.  CALCULATING DIRECTION OFFSET...");
+                if (!isNaN(bearingToTarget) && !isNaN(alphaNumber)) {
                     direction_offset = bearingToTarget - alphaNumber;
-                    console.log ("...Finished calculating CALCULATING DIRECTION OFFSET");
-                }
-                else if (!isNaN(bearingToTarget) && !((alphaNumber != null) && !isNaN(alphaNumber)))
-                {
-                    console.log ("bearing_to_target is good, alpha is not valid.  CALCULATING DIRECTION OFFSET...");
+                    console.log ("Calculating direction_offset based on bearing_to_target and alapha");
+                } else if (!isNaN(bearingToTarget)) {
                     direction_offset = bearingToTarget;
-                    console.log ("...Finished calculating CALCULATING DIRECTION OFFSET");
-                }
-                else if (isNaN(bearingToTarget) && ((alphaNumber != null) && !isNaN(alphaNumber)))
-                {
-                    console.log ("bearing_to_target is not good, alpha is valid.  CALCULATING DIRECTION OFFSET...");
+                    console.log ("Calculating direction_offset based on bearing_to_target");
+                } else if (!isNaN(alphaNumber)) {
                     direction_offset = alphaNumber;
-                    console.log ("...Finished calculating CALCULATING DIRECTION OFFSET");
-                } else
-                {
-                    console.log("SOMETHING WRONG.  Both bearing_to_target and alpha are bad.");
+                    console.log ("Calculating direction_offset based on alapha");
+                } else {
+                    console.error("Both bearing and alpha are invalid.");
                 }
                 document.getElementById("direction_offset").innerText = direction_offset.toFixed(0);
 

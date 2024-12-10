@@ -1,5 +1,17 @@
 [
     {
+        "name": "test1",
+        "description": "Angies",
+        "lat": 41.80912095171537,
+        "lon": -111.79729503176156,
+        "proximity1": 20,
+        "proximity2": 5,
+        "first_clue": "clue 1Eat the kitchen sink",
+        "second_clue": "clue two cost with tax - is magic box showing",
+        "magic_input": "$11.33",
+        "next": "/location3"
+    },
+    {
         "name": "location1",
         "description": "Angies",
         "lat": 41.77737117328678,
