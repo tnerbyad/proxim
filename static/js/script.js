@@ -121,7 +121,7 @@ function updateDisplay() {
                     const clue_div = document.getElementById("div_magic_input");
 
                     // Change the style of the div
-                    clue_div.style.display = "block";
+                    clueElement.style.display = "block";
 
                 } else if (distToTarget <= locationData.proximity1) {
                     clueElement.getElementById("clue").innerText = locationData.first_clue;
