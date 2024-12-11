@@ -84,13 +84,6 @@ function updateDisplay() {
                 const distToTarget = calculateDistance(userLat, userLon, locationData.lat, locationData.lon);
                 const bearingToTarget = calculateBearing(userLat, userLon, locationData.lat, locationData.lon);
 
-                //for debugging
-                if (debug_dist != 0)
-                {
-                    debug("in debug_dist check (script.js)");
-                    distToTarget = debug_dist;
-                }
-
                 document.getElementById("current_lattitude").innerText = userLat.toFixed(0);
                 document.getElementById("current_longitude").innerText = userLon.toFixed(0);
                 document.getElementById("distance_to_target").innerText = distToTarget.toFixed(0);
@@ -113,20 +106,6 @@ function updateDisplay() {
 
                 const clueElement = document.getElementById("clue");
                 const magic_div = document.getElementById("div_magic_input");
-
-                debug ("proximity1=" + locationData.proximity1 + " | proximity2=" + locationData.proximity2, 0);
-                if (distToTarget <= locationData.proximity2) {
-                    debug ("in proximity 2 code", 0);
-                    //really close, show final clue and text box and
-                    clueElement.innerText = locationData.second_clue;
-
-                    // Change the style of the div
-                    clueElement.style.display = "block";
-
-                } else if (distToTarget <= locationData.proximity1) {
-                    clueElement.getElementById("clue").innerText = locationData.first_clue;
-                    clueElement.style.display = "block";
-                }
             },
             (error) => {
                 console.error("Geolocation error code:", error.code);
@@ -166,6 +145,28 @@ document.querySelector("#requestPermissionButton").addEventListener("click", () 
 setInterval(updateDisplay, proximityCheckInterval);
 
 
+function checkDistance(){
+    //for debugging
+    if (debug_dist != 0)
+        {
+            debug("in debug_dist check (script.js)");
+            distToTarget = debug_dist;
+        }
+
+        debug ("proximity1=" + locationData.proximity1 + " | proximity2=" + locationData.proximity2, 0);
+        if (distToTarget <= locationData.proximity2) {
+            debug ("in proximity 2 code", 0);
+            //really close, show final clue and text box and
+            clueElement.innerText = locationData.second_clue;
+
+            // Change the style of the div
+            clueElement.style.display = "block";
+
+        } else if (distToTarget <= locationData.proximity1) {
+            clueElement.getElementById("clue").innerText = locationData.first_clue;
+            clueElement.style.display = "block";
+        }
+}
 function debug(msg, priority){
     if (priority==1)
     {
@@ -177,7 +178,7 @@ function debug(msg, priority){
         const curText = debug_element.innerHTML;
         if (curText.length>3000)
             curText.innerHTML="";
-        debug_element.innerHTML = msg + "<br>" + curText;
+        //debug_element.innerHTML = msg + "<br>" + curText;
 
     }
 }
