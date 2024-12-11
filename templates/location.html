@@ -108,16 +108,16 @@
 
         document.getElementById("button_dist_override").addEventListener("click", () => {
             const inputValText = document.getElementById("input_dist_override").value;
-            debug("inputValText=" + inputValText);
+            debug("inputValText=" + inputValText,0);
             const inputValNum = parseFloat(inputValText);
             if (isNaN(inputValNum))
             {
-                debug ("debug_dist not a number.  set to zero");
+                debug ("debug_dist not a number.  set to zero", 0);
                 debug_dist = 0;
             }
             else{
                 debug_dist = inputValNum;
-                debug("debug distance = " + debug_dist);
+                debug("debug distance = " + debug_dist,0);
             }
 
         });
@@ -136,9 +136,10 @@
             }
         });
     </script>
-    <script src="{{ url_for('static', filename='js/script.js?v-1.0.1') }}"></script>
+    <script src="{{ url_for('static', filename='js/script.js?v=1.0.1') }}"></script>
+    <script src="/static/js/script.js?v=1.0.0"></script>
     <script>
-        debug ("CHECK VERSION==BUG2");
+        debug ("CHECK VERSION==ANT");
     </script>
 </body>
 </html>
