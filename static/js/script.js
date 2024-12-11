@@ -112,19 +112,20 @@ function updateDisplay() {
                 document.getElementById("direction_offset").innerText = direction_offset.toFixed(0);
 
                 const clueElement = document.getElementById("clue");
+                const magic_div = document.getElementById("div_magic_input");
 
                 debug ("proximity1=" + locationData.proximity1 + " | proximity2=" + locationData.proximity2, 0);
                 if (distToTarget <= locationData.proximity2) {
                     debug ("in proximity 2 code", 0);
                     //really close, show final clue and text box and
                     clueElement.innerText = locationData.second_clue;
-                    const clue_div = document.getElementById("div_magic_input");
 
                     // Change the style of the div
                     clueElement.style.display = "block";
 
                 } else if (distToTarget <= locationData.proximity1) {
                     clueElement.getElementById("clue").innerText = locationData.first_clue;
+                    clueElement.style.display = "block";
                 }
             },
             (error) => {
