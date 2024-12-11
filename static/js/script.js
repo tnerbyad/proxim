@@ -121,11 +121,7 @@ function updateDisplay() {
                     const clue_div = document.getElementById("div_magic_input");
 
                     // Change the style of the div
-                    clue_div.style.backgroundColor = "lightblue";  // Change background color
-                    clue_div.style.fontSize = "20px";               // Change font size
-                    clue_div.style.padding = "10px";                // Add padding
-                    clue_div.style.border = "2px solid black";     // Add border
-
+                    clue_div.style.display = "block";
 
                 } else if (distToTarget <= locationData.proximity1) {
                     clueElement.getElementById("clue").innerText = locationData.first_clue;
