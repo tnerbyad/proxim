@@ -3,8 +3,8 @@ const proximityCheckInterval = 1000; // Check every 1 second
 
 //calculate distance in feet
 function calculateDistance(lat1, lon1, lat2, lon2) {
-    debug ("CALCULATING DISTANCE...");
-    debug (`Inputs: ${lat1}, ${lon1}, ${lat2}, ${lon2}`);
+    debug ("CALCULATING DISTANCE...", 1);
+    debug (`Inputs: ${lat1}, ${lon1}, ${lat2}, ${lon2}`, 1);
     const R = 20900999; // Radius in feet
     const dLat = (lat2 - lat1) * (Math.PI / 180);
     const dLon = (lon2 - lon1) * (Math.PI / 180);
@@ -12,14 +12,14 @@ function calculateDistance(lat1, lon1, lat2, lon2) {
             Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
             Math.sin(dLon / 2) ** 2;
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    debug ("...FINISHED CALCULATING DISTANCE");
+    debug ("...FINISHED CALCULATING DISTANCE", 1);
     return Math.round(R * c);
 }
 
 //calculate the direction in degreese between two points
 function calculateBearing(lat1, lon1, lat2, lon2) {
-    debug ("CALCULATE BEARING...");
-    debug (`INPUTS: ${lat1}, ${lon1}, ${lat2}, ${lon2}`);
+    debug ("CALCULATE BEARING...", 1);
+    debug (`INPUTS: ${lat1}, ${lon1}, ${lat2}, ${lon2}`,1);
     const dLon = (lon2 - lon1) * (Math.PI / 180);
     lat1 = lat1 * (Math.PI / 180);
     lat2 = lat2 * (Math.PI / 180);
@@ -27,17 +27,17 @@ function calculateBearing(lat1, lon1, lat2, lon2) {
     const y = Math.sin(dLon) * Math.cos(lat2);
     const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
     const bearing = Math.atan2(y, x) * (180 / Math.PI);
-    debug ("...FINSIHED CALCULATING BEARING");
+    debug ("...FINSIHED CALCULATING BEARING",1 );
     return (bearing + 360) % 360;
 }
 
 function startListeningForOrientation() {
-    debug("In Function startListeningForOrientation...");
+    debug("In Function startListeningForOrientation...", 1);
 
     const handleOrientation = (event) => {
         const { alpha, beta, gamma } = event;
 
-        const alphaElement = document.getElementById("device_orientation_alpha");
+        const alphaElement = document.getElementById("device_orientation_alpha", 1);
         if (alphaElement) {
             alphaElement.textContent = `${alpha != null ? alpha.toFixed(2) : ""}`;
         } else {
@@ -66,7 +66,7 @@ function startListeningForOrientation() {
         console.error("DeviceOrientationEvent is not supported on this device.");
     }
 
-    debug ("...Exiting Function startListeningForOrientation");
+    debug ("...Exiting Function startListeningForOrientation", 1);
 }
 
 function updateDisplay() {
@@ -107,15 +107,15 @@ function updateDisplay() {
                 } else if (!isNaN(alphaNumber)) {
                     direction_offset = alphaNumber;
                 } else {
-                    debug("Both bearing and alpha are invalid.");
+                    debug("Both bearing and alpha are invalid.",1);
                 }
                 document.getElementById("direction_offset").innerText = direction_offset.toFixed(0);
 
                 const clueElement = document.getElementById("clue");
 
-                debug ("proximity1=" + locationData.proximity1 + " | proximity2=" + locationData.proximity2);
+                debug ("proximity1=" + locationData.proximity1 + " | proximity2=" + locationData.proximity2, 0);
                 if (distToTarget <= locationData.proximity2) {
-                    debug ("in proximity 2 code");
+                    debug ("in proximity 2 code", 0);
                     //really close, show final clue and text box and
                     clueElement.innerText = locationData.second_clue;
                     const clue_div = document.getElementById("div_magic_input");
@@ -152,16 +152,16 @@ document.querySelector("#requestPermissionButton").addEventListener("click", () 
         DeviceOrientationEvent.requestPermission()
             .then((state) => {
                 if (state === "granted") {
-                    console.log("Device Permission granted!");
+                    console.log("Device Permission granted!", 1);
                     startListeningForOrientation();
                 } else {
-                    debug("Device Permission denied.");
+                    debug("Device Permission denied.", 1);
                 }
             })
             .catch((error) => console.error("Error requesting permission:", error));
     } else {
         // If requestPermission is not supported
-        debug("requestPermission is not supported on this browser.");
+        debug("requestPermission is not supported on this browser.", 1);
         startListeningForOrientation();
     }
 });
@@ -169,10 +169,16 @@ document.querySelector("#requestPermissionButton").addEventListener("click", () 
 setInterval(updateDisplay, proximityCheckInterval);
 
 
-function debug(msg){
-     const debug_element = document.getElementById("debug");
+function debug(msg, priority){
+    if (priority==1)
+    {
+        console.log (msg);
+    }
+    else
+    {
+        const debug_element = document.getElementById("debug");
+        const curText = debug_element.innerHTML;
+        debug_element.innerHTML = msg + "<br>" + curText;
 
-     const curText = debug_element.innerHTML;
-
-     debug_element.innerHTML = msg + "<br>" + curText;
+    }
 }
