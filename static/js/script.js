@@ -89,43 +89,60 @@ function startOrientationListening() {
     debug("In Function startOrientationListening...", 5);
 
     const handleOrientation = (event) => {
-        debug ("handleOrientation start 1",5);
+        debug("handleOrientation start", 5);
         const { alpha, beta, gamma } = event;
 
         const alphaElement = document.getElementById("device_orientation_alpha");
         if (alphaElement) {
-            debug ("handleOrientation start 2",5);
             alphaElement.textContent = `${alpha != null ? alpha : "0"}`;
-            debug ("handleOrientation start 3",5);
         } else {
-            console.error("Element 'device_orientation_alpha' not found.");
+            debug("Element 'device_orientation_alpha' not found.", 5);
         }
-        debug ("handleOrientation start 4",5);
+
         const betaElement = document.getElementById("device_orientation_beta");
         if (betaElement) {
-            debug ("handleOrientation start 5",5);
             betaElement.textContent = `${beta != null ? beta : "0"}`;
-            debug ("handleOrientation start 6",5);
         } else {
-            debug ("Element 'device_orientation_beta' not found.", 5);
+            debug("Element 'device_orientation_beta' not found.", 5);
         }
 
         const gammaElement = document.getElementById("device_orientation_gamma");
         if (gammaElement) {
             gammaElement.textContent = `${gamma != null ? gamma : "0"}`;
         } else {
-            console.error("Element 'device_orientation_gamma' not found.");
+            debug("Element 'device_orientation_gamma' not found.",5);
         }
+
+        debug("handleOrientation end", 5);
     };
 
-    /*if (window.DeviceOrientationEvent) {
-        window.removeEventListener("deviceorientation", handleOrientation); // Prevent duplicate listeners
-        window.addEventListener("deviceorientation", handleOrientation);
-    } else {
-        console.error("DeviceOrientationEvent is not supported on this device.");
-    }*/
+    if ("DeviceOrientationEvent" in window) {
+        debug("DeviceOrientationEvent is supported!", 5);
 
-    debug("...Exiting Function startOrientationListening", 1);
+        if (typeof DeviceOrientationEvent.requestPermission === "function") {
+            // For iOS Safari
+            DeviceOrientationEvent.requestPermission()
+                .then((response) => {
+                    if (response === "granted") {
+                        window.addEventListener("deviceorientation", handleOrientation);
+                        debug("DeviceOrientationEvent listener added.", 5);
+                    } else {
+                        debug("DeviceOrientation permission denied.", 5);
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error requesting DeviceOrientation permission:", error);
+                });
+        } else {
+            // For other browsers
+            window.addEventListener("deviceorientation", handleOrientation);
+            console.log("DeviceOrientationEvent listener added.");
+        }
+    } else {
+        console.error("DeviceOrientationEvent is not supported on this device/browser.");
+    }
+
+    debug("...Exiting Function startOrientationListening", 5);
 }
 
 
