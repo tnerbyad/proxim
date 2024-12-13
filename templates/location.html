@@ -114,7 +114,6 @@
         <button id="button_dist_override">dist</button>
     </div>
 
-
     <div id="debug"></div>
     <script>
         let debug_dist = 0;
@@ -135,21 +134,8 @@
 
         });
 
-        document.getElementById("buttonSendMagic").addEventListener("click", () => {
-            const inputMagic = document.getElementById("inputBoxMagic").value;
-            debug("magic=" + inputMagic);
-            if (inputMagic == locationData.magic_input )
-            {
-                alert ('congratulations.  you did it!');
-            }
-            else
-            {
-                alert('sorry, try again');
-                userVisited.push(locationData.name);
-            }
-        });
     </script>
-    <script src="/static/js/script.js?v=1.0.6"></script>
+    <script src="/static/js/script.js?v=1.0.22"></script>
     <script>
         debug ("CHECK VERSION==star");
     </script>

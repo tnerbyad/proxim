@@ -24,6 +24,7 @@ function updateDisplay(){
 
     // Calculate distance to target and update the UI
     const distanceToTarget = calculateDistance(currentLatNum, currentLonNum, targetLatNum, targetLonNum);
+
     document.getElementById("distance_to_target").innerText = distanceToTarget.toFixed(0);
 
     const bearingToTarget = calculateBearing(currentLatNum, currentLonNum, targetLatNum, targetLonNum);
@@ -154,7 +155,7 @@ function startPositionWatching() {
 }
 
 document.querySelector("#requestPermissionButton").addEventListener("click", () => {
-    this.style.display = "none"; // Hides the button
+    document.getElementById("requestPermissionButton").style.display = "none"; // Hides the button
     if (typeof DeviceOrientationEvent.requestPermission === "function") {
         // If requestPermission is supported
         DeviceOrientationEvent.requestPermission()
