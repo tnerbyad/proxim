@@ -89,20 +89,25 @@ function startOrientationListening() {
     debug("In Function startOrientationListening...", 1);
 
     const handleOrientation = (event) => {
+        debug ("handleOrientation start 1",5);
         const { alpha, beta, gamma } = event;
 
         const alphaElement = document.getElementById("device_orientation_alpha", 1);
         if (alphaElement) {
+            debug ("handleOrientation start 2",5);
             alphaElement.textContent = `${alpha != null ? alpha : "0"}`;
+            debug ("handleOrientation start 3",5);
         } else {
             console.error("Element 'device_orientation_alpha' not found.");
         }
-
+        debug ("handleOrientation start 4",5);
         const betaElement = document.getElementById("device_orientation_beta");
         if (betaElement) {
+            debug ("handleOrientation start 5",5);
             betaElement.textContent = `${beta != null ? beta : "0"}`;
+            debug ("handleOrientation start 6",5);
         } else {
-            console.error("Element 'device_orientation_beta' not found.");
+            debug ("Element 'device_orientation_beta' not found.", 5);
         }
 
         const gammaElement = document.getElementById("device_orientation_gamma");
@@ -131,13 +136,15 @@ function startPositionWatching() {
                 const currentLatElement = document.getElementById("current_latitude");
                 if (currentLatElement) {
                     currentLatElement.innerText = position.coords.latitude;
+                    debug ("current lat = " = position.coords.latitude);
                 } else {
-                    console.error("Element 'current_latitude' not found.");
+                    debug("Element 'current_latitude' not found.");
                 }
 
                 const currentLonElement = document.getElementById("current_longitude");
                 if (currentLonElement) {
                     currentLonElement.innerText = position.coords.longitude;
+                    debug ("current lon = " = position.coords.longitude);
                 } else {
                     console.error("Element 'current_longitude' not found.");
                 }
