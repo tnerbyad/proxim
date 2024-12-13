@@ -86,13 +86,13 @@ function calculateDirectionOffset(bearing, alpha){
 }
 
 function startOrientationListening() {
-    debug("In Function startOrientationListening...", 1);
+    debug("In Function startOrientationListening...", 5);
 
     const handleOrientation = (event) => {
         debug ("handleOrientation start 1",5);
         const { alpha, beta, gamma } = event;
 
-        const alphaElement = document.getElementById("device_orientation_alpha", 1);
+        const alphaElement = document.getElementById("device_orientation_alpha");
         if (alphaElement) {
             debug ("handleOrientation start 2",5);
             alphaElement.textContent = `${alpha != null ? alpha : "0"}`;
@@ -130,25 +130,25 @@ function startOrientationListening() {
 
 
 function startPositionWatching() {
-    debug ("In startPositionWatching", 5);
+    debug ("In startPositionWatching", 3);
     if (navigator.geolocation) {
         navigator.geolocation.watchPosition(
             (position) => {
-                debug ("in watchPosition", 5);
+                debug ("in watchPosition", 3);
                 const currentLatElement = document.getElementById("current_latitude");
                 if (currentLatElement) {
                     currentLatElement.innerText = position.coords.latitude;
-                    debug ("current lat = " + position.coords.latitude, 5);
+                    debug ("current lat = " + position.coords.latitude, 3);
                 } else {
-                    debug("Element 'current_latitude' not found.", 5);
+                    debug("Element 'current_latitude' not found.", 3);
                 }
 
                 const currentLonElement = document.getElementById("current_longitude");
                 if (currentLonElement) {
                     currentLonElement.innerText = position.coords.longitude;
-                    debug ("current lon = " + position.coords.longitude, 5);
+                    debug ("current lon = " + position.coords.longitude, 3);
                 } else {
-                    debug("Element 'current_longitude' not found.", 5);
+                    debug("Element 'current_longitude' not found.", 3);
                 }
             },
             (error) => {
