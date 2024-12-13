@@ -183,17 +183,18 @@ document.querySelector("#requestPermissionButton").addEventListener("click", () 
 
 
 function debug(msg, priority){
-    if (priority==1)
+    if (priority!=5)
     {
         console.log (msg);
     }
     else
     {
         const debug_element = document.getElementById("debug");
-        const curText = debug_element.innerHTML;
-        if (curText.length>3000)
-            curText.innerHTML="";
-        //debug_element.innerHTML = msg + "<br>" + curText;
+
+        //const curText = debug_element.innerHTML;
+        //if (curText.length>3000)
+          //  curText.innerHTML="";
+        debug_element.innerHTML = msg + "<br>" + curText;
 
     }
 }
