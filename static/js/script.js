@@ -35,7 +35,6 @@ function updateDisplay(){
     //set direction offset
     document.getElementById("direction_offset").innerText = directionOffset.toFixed(0);
 
-
     const clueElement = document.getElementById("clue");
     const magic_div = document.getElementById("div_magic_input");
 

@@ -25,7 +25,7 @@
             text-align: center; /* Center-align text */
             font-family: monospace; /* Font for numbers */
         }
-        #div-data-store{
+        #div-data-store {
             background-color: blue;
         }
         #clue {
@@ -41,7 +41,7 @@
             color:black;
         }
         #div_magic_input {
-            display: none;
+            background-color: brown;
         }
         #distance_to_target {
             font-size: 4rem; /* Large text for distance */
@@ -50,7 +50,7 @@
         #bearing_to_target, #current_latitude, #current_longitude,#device_orientation_alpha, #device_orientation_beta, #device_orientation_gamma {
             font-size: 2rem; /* Smaller text for bearing */
             margin: 0; /* Removes default margin */
-            display: none;
+            display: block;
         }
         #compass-container {
             position: relative;
@@ -87,16 +87,7 @@
             <button id="requestPermissionButton">?</button>
         </div>
     </div>
-
-    <!-- Display Messages -->
-    <div id="clue">
-        <div id="div_magic_input">
-            <label for="inputMagic">To proceed, enter the magic clue:</label>
-            <input type="text" id="inputBoxMagic" placeholder="Type something..." />
-            <button id="buttonSendMagic">Set Variable from Input</button>
-        </div>
-    </div>
-
+   <br><br> what is going on here.  why not displayed
     <!-- hidden variables - set by device listeners -->
     <div id="div-data-store">
         <div id="current_latitude">41.80922351939347</div>
@@ -106,13 +97,6 @@
         <div id="device_orientation_gamma">0</div>
     </div>
 
-
-    <!--for debugging-->
-    <div id="div_dist_override">
-        <label for="label_dist_override">dist=</label>
-        <input type="text" id="input_dist_override" placeholder="0" />
-        <button id="button_dist_override">dist</button>
-    </div>
 
     <div id="debug"></div>
     <script>
