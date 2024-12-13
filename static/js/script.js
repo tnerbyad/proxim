@@ -158,7 +158,7 @@ function startPositionWatching() {
             { enableHighAccuracy: true }
         );
     } else {
-        console.error("Geolocation is not supported by your browser.");
+        debug ("Geolocation is not supported by your browser. XXX", 5);
     }
 }
 
