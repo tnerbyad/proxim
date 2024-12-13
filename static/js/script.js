@@ -1,5 +1,6 @@
 let userVisited = [];
 const proximityCheckInterval = 1000; // Check every 1 second
+let watchId = null;
 
 //handle all the display
 function updateDisplay(){
@@ -145,11 +146,10 @@ function startOrientationListening() {
     debug("...Exiting Function startOrientationListening", 5);
 }
 
-
 function startPositionWatching() {
     debug ("In startPositionWatching", 3);
     if (navigator.geolocation) {
-        navigator.geolocation.watchPosition(
+        watchId = navigator.geolocation.watchPosition(
             (position) => {
                 debug ("in watchPosition", 3);
                 const currentLatElement = document.getElementById("current_latitude");
@@ -202,19 +202,33 @@ document.querySelector("#requestPermissionButton").addEventListener("click", () 
     }
 });
 
+function stopOrientationListening() {
+    if (handleOrientation) {
+        window.removeEventListener("deviceorientation", handleOrientation);
+        console.log("DeviceOrientationEvent listener removed.");
+    } else {
+        console.error("No listener to remove.");
+    }
+}
+
+function stopPositionWatching() {
+    if (watchId !== null) {
+        navigator.geolocation.clearWatch(watchId); // Stop the listener
+        console.log("Position watching stopped. watchId:", watchId);
+        watchId = null; // Reset the watchId
+    } else {
+        console.error("No active geolocation watcher to stop.");
+    }
+}
 
 function debug(msg, priority){
-    if (priority!=5)
+    if (priority!=6)
     {
         console.log (msg);
     }
     else
     {
         const debug_element = document.getElementById("debug");
-
-        //const curText = debug_element.innerHTML;
-        //if (curText.length>3000)
-          //  curText.innerHTML="";
         debug_element.innerHTML += msg + "<br>";
 
     }
@@ -223,4 +237,3 @@ function debug(msg, priority){
 startPositionWatching();
 setInterval(updateDisplay, proximityCheckInterval);
 
-//navigator.geolocation.clearWatch - to stop
