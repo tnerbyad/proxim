@@ -165,20 +165,22 @@ function startPositionWatching() {
 document.querySelector("#requestPermissionButton").addEventListener("click", () => {
     document.getElementById("requestPermissionButton").style.display = "none"; // Hides the button
     if (typeof DeviceOrientationEvent.requestPermission === "function") {
+        debug ("requesting permission...", 5);
+
         // If requestPermission is supported
         DeviceOrientationEvent.requestPermission()
             .then((state) => {
                 if (state === "granted") {
-                    console.log("Device Permission granted!", 1);
+                    debug("Device Permission granted!", 5);
                     startOrientationListening();
                 } else {
-                    debug("Device Permission denied.", 1);
+                    debug("Device Permission denied.", 5);
                 }
             })
             .catch((error) => console.error("Error requesting permission:", error));
     } else {
         // If requestPermission is not supported
-        debug("requestPermission is not supported on this browser.", 1);
+        debug("requestPermission is not supported on this browser.", 5);
         startOrientationListening();
     }
 });
