@@ -1,6 +1,52 @@
 let userVisited = [];
 const proximityCheckInterval = 1000; // Check every 1 second
 
+//handle all the display
+function updateDisplay(){
+
+    //get target
+    const targetLatNum = locationData.lat;
+    const targetLonNum = locationData.lon
+
+    // Read current Latitude
+    const currentLatElement = document.getElementbyId("current_latitude");
+    const currentLatText = currentLatElement.innerText;
+    const currentLatNum = parseFloat(currentLatText);
+    if (isNaN(currentLatNum))
+        debug ("Current Latitude is not a number !!");
+
+    // Read current Longitude
+    const currentLonElement = document.getElementbyId("current_longitude");
+    const currentLonText = currentLatElement.innerText;
+    const currentLonNum = parseFloat(currentLatText);
+    if (isNaN(currentLonNum))
+        debug ("Current Longitude is not a number !!");
+
+    // Calculate distance to target and update the UI
+    const distanceToTarget = calculateDistance(currentLatNum, currentLonNum, targetLatNum, targetLonNum);
+    document.getElementById("distance_to_target").innerText = distanceToTarget.toFixed(0);
+
+    const bearingToTarget = calculateBearing(currentLatNum, currentLonNum, targetLatNum, targetLonNum);
+    const alphaElement = document.getElementById("device_orientation_alpha");
+    const alphaNumber = parseFloat(alphaElement.innerText);
+    const directionOffset = calculateDirectionOffset(bearingToTarget, alphaNumber);
+
+    //set direction offset
+    document.getElementById("direction_offset").innerText = directionOffset.toFixed(0);
+
+
+
+
+
+
+    const clueElement = document.getElementById("clue");
+    const magic_div = document.getElementById("div_magic_input");
+
+    const distToTarget = calculateDistance(userLat, userLon, locationData.lat, locationData.lon);
+                const bearingToTarget = calculateBearing(userLat, userLon, locationData.lat, locationData.lon);
+
+}
+
 //calculate distance in feet
 function calculateDistance(lat1, lon1, lat2, lon2) {
     debug ("CALCULATING DISTANCE...", 1);
@@ -31,81 +77,77 @@ function calculateBearing(lat1, lon1, lat2, lon2) {
     return (bearing + 360) % 360;
 }
 
-function startListeningForOrientation() {
-    debug("In Function startListeningForOrientation...", 1);
+function calculateDirectionOffset(bearing, alpha){
+    //bearing is the direction from current location to target location
+    //alpha is the direction the phone is pointing
+    if (!isNaN(bearing) && !isNaN(alpha)) {
+        return (bearingToTarget - alphaNumber);
+    } else if (!isNaN(bearing)) {
+        return(bearing);
+    } else if (!isNaN(alphaNumber)) {
+        return (alpha);
+    } else {
+        debug("Both bearing and alpha are invalid.",1);
+        return 0;
+    }
+}
+
+function startOrientationListening() {
+    debug("In Function startOrientationListening...", 1);
 
     const handleOrientation = (event) => {
         const { alpha, beta, gamma } = event;
 
         const alphaElement = document.getElementById("device_orientation_alpha", 1);
         if (alphaElement) {
-            alphaElement.textContent = `${alpha != null ? alpha.toFixed(2) : ""}`;
+            alphaElement.textContent = `${alpha != null ? alpha : "0"}`;
         } else {
             console.error("Element 'device_orientation_alpha' not found.");
         }
 
         const betaElement = document.getElementById("device_orientation_beta");
         if (betaElement) {
-            betaElement.textContent = `${beta != null ? beta.toFixed(2) : ""}`;
+            betaElement.textContent = `${beta != null ? beta : "0"}`;
         } else {
             console.error("Element 'device_orientation_beta' not found.");
         }
 
         const gammaElement = document.getElementById("device_orientation_gamma");
         if (gammaElement) {
-            gammaElement.textContent = `${gamma != null ? gamma.toFixed(2) : ""}`;
+            gammaElement.textContent = `${gamma != null ? gamma : "0"}`;
         } else {
             console.error("Element 'device_orientation_gamma' not found.");
         }
     };
 
-    if (window.DeviceOrientationEvent) {
+    /*if (window.DeviceOrientationEvent) {
         window.removeEventListener("deviceorientation", handleOrientation); // Prevent duplicate listeners
         window.addEventListener("deviceorientation", handleOrientation);
     } else {
         console.error("DeviceOrientationEvent is not supported on this device.");
-    }
+    }*/
 
-    debug ("...Exiting Function startListeningForOrientation", 1);
+    debug ("...Exiting Function startOrientationListening", 1);
 }
 
-function updateDisplay() {
+
+function startPositionWatching() {
     if (navigator.geolocation) {
         navigator.geolocation.watchPosition(
             (position) => {
-                const userLat = position.coords.latitude;
-                const userLon = position.coords.longitude;
-
-                if (!locationData) {
-                    console.error("Location data is not available.");
-                    return;
-                }
-
-                const distToTarget = calculateDistance(userLat, userLon, locationData.lat, locationData.lon);
-                const bearingToTarget = calculateBearing(userLat, userLon, locationData.lat, locationData.lon);
-
-                document.getElementById("current_lattitude").innerText = userLat.toFixed(0);
-                document.getElementById("current_longitude").innerText = userLon.toFixed(0);
-                document.getElementById("distance_to_target").innerText = distToTarget.toFixed(0);
-                document.getElementById("bearing_to_target").innerText = bearingToTarget.toFixed(0);
-
-                const alphaText = document.getElementById("device_orientation_alpha").textContent;
-                const alphaNumber = parseFloat(alphaText);
-                let direction_offset = 0;
-
-                if (!isNaN(bearingToTarget) && !isNaN(alphaNumber)) {
-                    direction_offset = bearingToTarget - alphaNumber;
-                } else if (!isNaN(bearingToTarget)) {
-                    direction_offset = bearingToTarget;
-                } else if (!isNaN(alphaNumber)) {
-                    direction_offset = alphaNumber;
+                const currentLatElement = document.getElementById("current_latitude");
+                if (currentLatElement) {
+                    currentLatElement.innerText = position.coords.latitude;
                 } else {
-                    debug("Both bearing and alpha are invalid.",1);
+                    console.error("Element 'current_latitude' not found.");
                 }
-                document.getElementById("direction_offset").innerText = direction_offset.toFixed(0);
 
-                const clueElement = document.getElementById("clue");
-                const magic_div = document.getElementById("div_magic_input");
+                const currentLonElement = document.getElementById("current_longitude");
+                if (currentLonElement) {
+                    currentLonElement.innerText = position.coords.longitude;
+                } else {
+                    console.error("Element 'current_longitude' not found.");
+                }
             },
             (error) => {
                 console.error("Geolocation error code:", error.code);
@@ -118,18 +160,15 @@ function updateDisplay() {
     }
 }
 
-document.getElementById("requestPermissionButton").addEventListener("click", function() {
-    this.style.display = "none"; // Hides the button
-});
-
 document.querySelector("#requestPermissionButton").addEventListener("click", () => {
+    this.style.display = "none"; // Hides the button
     if (typeof DeviceOrientationEvent.requestPermission === "function") {
         // If requestPermission is supported
         DeviceOrientationEvent.requestPermission()
             .then((state) => {
                 if (state === "granted") {
                     console.log("Device Permission granted!", 1);
-                    startListeningForOrientation();
+                    startOrientationListening();
                 } else {
                     debug("Device Permission denied.", 1);
                 }
@@ -138,35 +177,11 @@ document.querySelector("#requestPermissionButton").addEventListener("click", () 
     } else {
         // If requestPermission is not supported
         debug("requestPermission is not supported on this browser.", 1);
-        startListeningForOrientation();
+        startOrientationListening();
     }
 });
 
-setInterval(updateDisplay, proximityCheckInterval);
 
-
-function checkDistance(){
-    //for debugging
-    if (debug_dist != 0)
-        {
-            debug("in debug_dist check (script.js)");
-            distToTarget = debug_dist;
-        }
-
-        debug ("proximity1=" + locationData.proximity1 + " | proximity2=" + locationData.proximity2, 0);
-        if (distToTarget <= locationData.proximity2) {
-            debug ("in proximity 2 code", 0);
-            //really close, show final clue and text box and
-            clueElement.innerText = locationData.second_clue;
-
-            // Change the style of the div
-            clueElement.style.display = "block";
-
-        } else if (distToTarget <= locationData.proximity1) {
-            clueElement.getElementById("clue").innerText = locationData.first_clue;
-            clueElement.style.display = "block";
-        }
-}
 function debug(msg, priority){
     if (priority==1)
     {
@@ -182,3 +197,8 @@ function debug(msg, priority){
 
     }
 }
+
+startPositionWatching();
+setInterval(updateDisplay, proximityCheckInterval);
+
+//navigator.geolocation.clearWatch - to stop

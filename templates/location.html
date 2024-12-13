@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='/css/style.css') }}">
 
     <style>
-        #dist-container {
+        #div-dist-container {
             width: 300px; /* Width of the circle */
             height: 300px; /* Height of the circle */
             display: flex;
@@ -25,9 +25,12 @@
             text-align: center; /* Center-align text */
             font-family: monospace; /* Font for numbers */
         }
+        #div-data-store{
+            background-color: blue;
+        }
         #clue {
             width: 300;
-            background-color:yellow;
+            background-color:red;
             color: black;
         }
         #debug
@@ -44,7 +47,7 @@
             font-size: 4rem; /* Large text for distance */
             margin: 0; /* Removes default margin */
         }
-        #bearing_to_target, #current_lattitude, #current_longitude,#device_orientation_alpha, #device_orientation_beta, #device_orientation_gamma {
+        #bearing_to_target, #current_latitude, #current_longitude,#device_orientation_alpha, #device_orientation_beta, #device_orientation_gamma {
             font-size: 2rem; /* Smaller text for bearing */
             margin: 0; /* Removes default margin */
             display: none;
@@ -76,7 +79,8 @@
     </script>
 </head>
 <body>
-    <div id="dist-container">
+    <!-- Display Area -->
+    <div id="div-dist-container">
         <div id="distance_to_target"></div>
         <div id="direction_offset"></div>
         <div>
@@ -84,15 +88,24 @@
         </div>
     </div>
 
-    <!-- hidden variables -->
-    <div id="bearing_to_target"></div>
-    <div id="current_lattitude"></div>
-    <div id="current_longitude"></div>
-    <div id="device_orientation_alpha"></div>
-    <div id="device_orientation_beta"></div>
-    <div id="device_orientation_gamma"></div>
+    <!-- Display Messages -->
+    <div id="clue">
+        <div id="div_magic_input">
+            <label for="inputMagic">To proceed, enter the magic clue:</label>
+            <input type="text" id="inputBoxMagic" placeholder="Type something..." />
+            <button id="buttonSendMagic">Set Variable from Input</button>
+        </div>
+    </div>
 
-    <div id="clue">clue</div>
+    <!-- hidden variables - set by device listeners -->
+    <div id="div-data-store">
+        <div id="current_latitude">41.80922351939347</div>
+        <div id="current_longitude">-111.79667625695255</div>
+        <div id="device_orientation_alpha">0</div>
+        <div id="device_orientation_beta">0</div>
+        <div id="device_orientation_gamma">0</div>
+    </div>
+
 
     <!--for debugging-->
     <div id="div_dist_override">
@@ -101,11 +114,6 @@
         <button id="button_dist_override">dist</button>
     </div>
 
-    <div id="div_magic_input">
-        <label for="inputMagic">To proceed, enter the magic clue:</label>
-        <input type="text" id="inputBoxMagic" placeholder="Type something..." />
-        <button id="buttonSendMagic">Set Variable from Input</button>
-    </div>
 
     <div id="debug"></div>
     <script>
