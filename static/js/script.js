@@ -9,16 +9,16 @@ function updateDisplay(){
     const targetLonNum = locationData.lon
 
     // Read current Latitude
-    const currentLatElement = document.getElementbyId("current_latitude");
+    const currentLatElement = document.getElementById("current_latitude");
     const currentLatText = currentLatElement.innerText;
     const currentLatNum = parseFloat(currentLatText);
     if (isNaN(currentLatNum))
         debug ("Current Latitude is not a number !!");
 
     // Read current Longitude
-    const currentLonElement = document.getElementbyId("current_longitude");
-    const currentLonText = currentLatElement.innerText;
-    const currentLonNum = parseFloat(currentLatText);
+    const currentLonElement = document.getElementById("current_longitude");
+    const currentLonText = currentLonElement.innerText;
+    const currentLonNum = parseFloat(currentLonText);
     if (isNaN(currentLonNum))
         debug ("Current Longitude is not a number !!");
 
@@ -35,15 +35,8 @@ function updateDisplay(){
     document.getElementById("direction_offset").innerText = directionOffset.toFixed(0);
 
 
-
-
-
-
     const clueElement = document.getElementById("clue");
     const magic_div = document.getElementById("div_magic_input");
-
-    const distToTarget = calculateDistance(userLat, userLon, locationData.lat, locationData.lon);
-                const bearingToTarget = calculateBearing(userLat, userLon, locationData.lat, locationData.lon);
 
 }
 
@@ -81,10 +74,10 @@ function calculateDirectionOffset(bearing, alpha){
     //bearing is the direction from current location to target location
     //alpha is the direction the phone is pointing
     if (!isNaN(bearing) && !isNaN(alpha)) {
-        return (bearingToTarget - alphaNumber);
+        return (bearing - alpha);
     } else if (!isNaN(bearing)) {
         return(bearing);
-    } else if (!isNaN(alphaNumber)) {
+    } else if (!isNaN(alpha)) {
         return (alpha);
     } else {
         debug("Both bearing and alpha are invalid.",1);
