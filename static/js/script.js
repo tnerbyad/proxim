@@ -13,14 +13,14 @@ function updateDisplay(){
     const currentLatText = currentLatElement.innerText;
     const currentLatNum = parseFloat(currentLatText);
     if (isNaN(currentLatNum))
-        debug ("Current Latitude is not a number !!");
+        debug ("Current Latitude is not a number !!", 1);
 
     // Read current Longitude
     const currentLonElement = document.getElementById("current_longitude");
     const currentLonText = currentLonElement.innerText;
     const currentLonNum = parseFloat(currentLonText);
     if (isNaN(currentLonNum))
-        debug ("Current Longitude is not a number !!");
+        debug ("Current Longitude is not a number !!",1);
 
     // Calculate distance to target and update the UI
     const distanceToTarget = calculateDistance(currentLatNum, currentLonNum, targetLatNum, targetLonNum);
@@ -125,28 +125,30 @@ function startOrientationListening() {
         console.error("DeviceOrientationEvent is not supported on this device.");
     }*/
 
-    debug ("...Exiting Function startOrientationListening", 1);
+    debug("...Exiting Function startOrientationListening", 1);
 }
 
 
 function startPositionWatching() {
+    debug ("In startPositionWatching", 5);
     if (navigator.geolocation) {
         navigator.geolocation.watchPosition(
             (position) => {
+                debug ("in watchPosition", 5);
                 const currentLatElement = document.getElementById("current_latitude");
                 if (currentLatElement) {
                     currentLatElement.innerText = position.coords.latitude;
-                    debug ("current lat = " = position.coords.latitude);
+                    debug ("current lat = " + position.coords.latitude, 5);
                 } else {
-                    debug("Element 'current_latitude' not found.");
+                    debug("Element 'current_latitude' not found.", 5);
                 }
 
                 const currentLonElement = document.getElementById("current_longitude");
                 if (currentLonElement) {
                     currentLonElement.innerText = position.coords.longitude;
-                    debug ("current lon = " = position.coords.longitude);
+                    debug ("current lon = " + position.coords.longitude, 5);
                 } else {
-                    console.error("Element 'current_longitude' not found.");
+                    debug("Element 'current_longitude' not found.", 5);
                 }
             },
             (error) => {
@@ -194,7 +196,7 @@ function debug(msg, priority){
         //const curText = debug_element.innerHTML;
         //if (curText.length>3000)
           //  curText.innerHTML="";
-        debug_element.innerHTML = msg + "<br>" + curText;
+        debug_element.innerHTML += msg + "<br>";
 
     }
 }

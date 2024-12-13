@@ -102,24 +102,9 @@
     <script>
         let debug_dist = 0;
 
-        document.getElementById("button_dist_override").addEventListener("click", () => {
-            const inputValText = document.getElementById("input_dist_override").value;
-            debug("inputValText=" + inputValText,0);
-            const inputValNum = parseFloat(inputValText);
-            if (isNaN(inputValNum))
-            {
-                debug ("debug_dist not a number.  set to zero", 0);
-                debug_dist = 0;
-            }
-            else{
-                debug_dist = inputValNum;
-                debug("debug distance = " + debug_dist,0);
-            }
-
-        });
 
     </script>
-    <script src="/static/js/script.js?v=1.0.26"></script>
+    <script src="/static/js/script.js?v=1.0.27"></script>
     <script>
         debug ("CHECK VERSION==star");
     </script>
