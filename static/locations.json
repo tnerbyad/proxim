@@ -1,6 +1,6 @@
 [
     {
-        "name": "location1",
+        "name": "isa",
         "description": "pigglies",
         "lat": 41.80912095171537,
         "lon": -111.79729503176156,
@@ -8,11 +8,12 @@
         "proximity2": 10,
         "first_clue": "how high",
         "second_clue": "flyaway",
-        "magic_input": "$11.33",
-        "next": "/location2"
+        "magic_key": "$11.33",
+        "fudge": 2,
+        "next": "dalawa"
     },
     {
-        "name": "location2",
+        "name": "dalawa",
         "description": "Angies",
         "lat": 41.77737117328678,
         "lon": -111.80637179308403,
@@ -20,11 +21,12 @@
         "proximity2": 10,
         "first_clue": "clue 1Eat the kitchen sink",
         "second_clue": "clue two cost with tax - is magic box showing",
-        "magic_input": "$11.33",
-        "next": "/location3"
+        "magic_key": "$11.33",
+        "fudge": 2,
+        "next": "tatlo"
     },
     {
-        "name": "location3",
+        "name": "tatlo",
         "description": "hyde park, city hall",
         "lat": 41.79938501121729,
         "lon": -111.81619927128764,
@@ -32,11 +34,12 @@
         "proximity2": 25,
         "first_clue": "You're getting warmer! Look for a playground",
         "second_clue": "Almost there! The magic word is hidden in plain sight.",
-        "magic_input": "Hyde Park",
-        "next": "/location4"
+        "magic_key": "Hyde Park",
+        "fudge": 2,
+        "next": "apat"
     },
     {
-        "name": "location4",
+        "name": "apat",
         "description": "chickafila",
         "lat": 41.75632177398785,
         "lon": -111.8348008765066,
@@ -44,7 +47,8 @@
         "proximity2": 25,
         "first_clue": "You're near a famous university.",
         "second_clue": "Check near the library.",
-        "magic_input": "berkeley",
+        "magic_key": "berkeley",
+        "fudge": 2,
         "next": ""
     }
 ]

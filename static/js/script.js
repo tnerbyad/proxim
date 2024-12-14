@@ -1,23 +1,26 @@
 let userVisited = [];
 const proximityCheckInterval = 1000; // Check every 1 second
 let watchId = null;
+let debugDistance = 0;
 
 //handle all the display
 function updateDisplay(){
 
     //get target
     const targetLatNum = locationData.lat;
-    const targetLonNum = locationData.lon
+    const targetLonNum = locationData.lon;
+    const proximity1Num = parseFloat(locationData.proximity1);
+    const proximity2Num = parseFloat(locationData.proximity2);
 
     // Read current Latitude
-    const currentLatElement = document.getElementById("current_latitude");
+    const currentLatElement = document.getElementById("current-latitude");
     const currentLatText = currentLatElement.innerText;
     const currentLatNum = parseFloat(currentLatText);
     if (isNaN(currentLatNum))
         debug ("Current Latitude is not a number !!", 1);
 
     // Read current Longitude
-    const currentLonElement = document.getElementById("current_longitude");
+    const currentLonElement = document.getElementById("current-longitude");
     const currentLonText = currentLonElement.innerText;
     const currentLonNum = parseFloat(currentLonText);
     if (isNaN(currentLonNum))
@@ -25,24 +28,47 @@ function updateDisplay(){
 
     // Calculate distance to target and update the UI
     const distanceToTarget = calculateDistance(currentLatNum, currentLonNum, targetLatNum, targetLonNum);
-
-    document.getElementById("distance_to_target").innerText = distanceToTarget.toFixed(0);
+    document.getElementById("distance-to-target").innerText = distanceToTarget.toFixed(0);
 
     const bearingToTarget = calculateBearing(currentLatNum, currentLonNum, targetLatNum, targetLonNum);
-    const alphaElement = document.getElementById("device_orientation_alpha");
+    const alphaElement = document.getElementById("device-orientation-alpha");
     const alphaNumber = parseFloat(alphaElement.innerText);
     const directionOffset = calculateDirectionOffset(bearingToTarget, alphaNumber);
 
     //set direction offset
-    document.getElementById("direction_offset").innerText = directionOffset.toFixed(0);
+    document.getElementById("direction-offset").innerText = directionOffset.toFixed(0);
 
-    const clueElement = document.getElementById("clue");
-    const magic_div = document.getElementById("div_magic_input");
+    /////////////////
+
+    const clueDisplayElement = document.getElementById('clue-display');
+    const magicKeyDisplayElement = document.getElementById('magic-display');
+    //const magicKeyInput = document.getElementById('magic_key_input');
+    //const magicKeyButton = document.getElementById('magic_key_submit');
+
+    if ( distanceToTarget <= proximity2Num ) {
+        //alert('second clue=' + locationData);
+        clueDisplayElement.textContent = locationData.second_clue;
+        clueDisplayElement.display = 'block';
+        magicKeyDisplayElement.style.display = 'block';
+
+    }
+    else if ( distanceToTarget <= proximity1Num ) {
+       // alert('first clue=' + locationData);
+        clueDisplayElement.textContent = locationData.first_clue;
+        clueDisplayElement.style.display = 'block';
+    }
+    else {
+        clueDisplayElement.style.display = 'none';
+        magicKeyDisplayElement.style.display = 'none';
+    }
 
 }
 
 //calculate distance in feet
 function calculateDistance(lat1, lon1, lat2, lon2) {
+    if (debugDistance != 0)
+        return debugDistance;
+
     debug ("CALCULATING DISTANCE...", 1);
     debug (`Inputs: ${lat1}, ${lon1}, ${lat2}, ${lon2}`, 1);
     const R = 20900999; // Radius in feet
@@ -93,25 +119,25 @@ function startOrientationListening() {
         debug("handleOrientation start", 5);
         const { alpha, beta, gamma } = event;
 
-        const alphaElement = document.getElementById("device_orientation_alpha");
+        const alphaElement = document.getElementById("device-orientation-alpha");
         if (alphaElement) {
             alphaElement.textContent = `${alpha != null ? alpha : "0"}`;
         } else {
-            debug("Element 'device_orientation_alpha' not found.", 5);
+            debug("Element 'device-orientation-alpha' not found.", 5);
         }
 
-        const betaElement = document.getElementById("device_orientation_beta");
+        const betaElement = document.getElementById("device-orientation-beta");
         if (betaElement) {
             betaElement.textContent = `${beta != null ? beta : "0"}`;
         } else {
-            debug("Element 'device_orientation_beta' not found.", 5);
+            debug("Element 'device-orientation-beta' not found.", 5);
         }
 
-        const gammaElement = document.getElementById("device_orientation_gamma");
+        const gammaElement = document.getElementById("device-orientation-gamma");
         if (gammaElement) {
             gammaElement.textContent = `${gamma != null ? gamma : "0"}`;
         } else {
-            debug("Element 'device_orientation_gamma' not found.",5);
+            debug("Element 'device-orientation-gamma' not found.",5);
         }
 
         debug("handleOrientation end", 5);
@@ -152,20 +178,20 @@ function startPositionWatching() {
         watchId = navigator.geolocation.watchPosition(
             (position) => {
                 debug ("in watchPosition", 3);
-                const currentLatElement = document.getElementById("current_latitude");
+                const currentLatElement = document.getElementById("current-latitude");
                 if (currentLatElement) {
                     currentLatElement.innerText = position.coords.latitude;
                     debug ("current lat = " + position.coords.latitude, 3);
                 } else {
-                    debug("Element 'current_latitude' not found.", 3);
+                    debug("Element 'current-latitude' not found.", 3);
                 }
 
-                const currentLonElement = document.getElementById("current_longitude");
+                const currentLonElement = document.getElementById("current-longitude");
                 if (currentLonElement) {
                     currentLonElement.innerText = position.coords.longitude;
                     debug ("current lon = " + position.coords.longitude, 3);
                 } else {
-                    debug("Element 'current_longitude' not found.", 3);
+                    debug("Element 'current-longitude' not found.", 3);
                 }
             },
             (error) => {
@@ -179,8 +205,8 @@ function startPositionWatching() {
     }
 }
 
-document.querySelector("#requestPermissionButton").addEventListener("click", () => {
-    document.getElementById("requestPermissionButton").style.display = "none"; // Hides the button
+document.querySelector("#request-permission-button").addEventListener("click", () => {
+    document.getElementById("request-permission-button").style.display = "none"; // Hides the button
     if (typeof DeviceOrientationEvent.requestPermission === "function") {
         debug ("requesting permission...", 5);
 
@@ -237,3 +263,52 @@ function debug(msg, priority){
 startPositionWatching();
 setInterval(updateDisplay, proximityCheckInterval);
 
+
+document.getElementById('magic-key-submit').addEventListener('click', function (event) {
+    event.preventDefault();  //prevent default button behavior
+
+    const userInputElement = document.getElementById('magic-key-input');
+    const userInput = userInputElement.value;
+
+    fetch('/submit_key', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ key: userInput }), // Send the clue as JSON
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            if (data.success) {
+                window.location.href = locationData.next; // Redirect to the next location
+            } else {
+                alert(data.message); // Show error message
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    /*if (!userInputElement) {
+        alert("userInputElement is null!");
+        return;
+    }
+
+    const userValue = userInputElement.value; // Get the input value
+    console.log("Input value:", userValue); // Debugging
+    //alert("userValue=" + userValue + "| magicKey=" + locationData.magic_key);
+
+    if (userValue === locationData.magic_key) {
+        window.location.href = locationData.next;
+    } else {
+        alert(`${userValue} is the wrong clue! Try again.`);
+    }*/
+});
+
+document.getElementById('debug-button').addEventListener('click', function(){
+    if (debugDistance == 0)
+        debugDistance = 49;
+    else if (debugDistance == 49)
+        debugDistance = 8;
+    else
+        debugDistance = 0;
+});

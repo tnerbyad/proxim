@@ -2,22 +2,59 @@ body {
     font-family: Arial, sans-serif;
     margin: 20px;
     padding: 0;
+    text-align: center;
+    display: flex;
+    justify-content: center; /* Horizontally center */
+    align-items: center; /* Vertically center (optional) */
+    height: 100vh; /* Optional for full-page centering */
+    margin: 0; /* Remove default body margin */
 }
-
-.error {
-    color: red;
+#div-dist-container {
+    width: 300px; /* Width of the circle */
+    height: 300px; /* Height of the circle */
+    display: flex;
+    flex-direction: column; /* Stack elements vertically */
+    justify-content: center; /* Center elements vertically */
+    align-items: center; /* Center elements horizontally */
+    border-radius: 50%; /* Makes the container circular */
+    background-color: black; /* Circle background color */
+    color: yellowgreen; /* Text color */
+    text-align: center; /* Center-align text */
+    font-family: monospace; /* Font for numbers */
 }
-
-.progress-bar {
-    background: #eee;
-    height: 10px;
-    width: 100%;
-    border-radius: 5px;
-    overflow: hidden;
-    margin-bottom: 20px;
+#distance-to-target {
+    font-size: 4rem; /* Large text for distance */
+    margin: 0; /* Removes default margin */
 }
+#request-permission-button {
+    font-size: 12px; /* Small font size */
+    background-color: white;
+    color: black;
+    border: 2px solid black;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 50%; /* Optional, for rounded corners */
+}
+#direction-offset
+{
+    font-size: 1rem; /* Large text for distance */
+    margin: 0; /* Removes default margin */
+}
+#clue-display {
+    width: 300;
+    background-color:white;
+    color: grey;
+    display: none;
+}
+#magic-display {
+    display: none;
+}
+#magic-key-input {
 
-.progress-bar div {
-    background: #4caf50;
-    height: 10px;
+}
+#magic-key-submit {
+
+}
+#div-data-store {
+    display: none;
 }

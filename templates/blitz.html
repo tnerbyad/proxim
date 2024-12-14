@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
+    <title>{{ location.name }}</title>
+    <link rel="icon" href="data:,">
+    <link rel="stylesheet" href="{{ url_for('static', filename='/css/style.css') }}">
+    <script>
+        //const locationData = {{ location | tojson }};
+
+        // pass data from backend
+        const locationData = {
+            name: "{{ location.name }}",
+            description: "{{ location.description }}",
+            lat: {{ location.lat }},
+            lon: {{ location.lon }},
+            proximity1: {{ location.proximity1 }},
+            proximity2: {{ location.proximity2 }},
+            first_clue: "{{ location.first_clue }}",
+            second_clue: "{{ location.second_clue }}",
+            magic_key: "{{ location.magic_key }}",
+            fudge: {{ location.fudge }},
+            next: "{{ location.next }}",
+        };
+    </script>
+</head>
+<body>
+    <!-- Display Area -->
+    <div>
+        <div id="div-dist-container">
+            <div id="distance-to-target"></div>
+            <div id="direction-offset"></div>
+            <div>
+                <button id="request-permission-button">?</button>
+            </div>
+        </div>
+        <!-- Clues-->
+        <div id="clue-div">
+            <div id="clue-display">some clue</div>
+            <div id="magic-display">
+                <input type="text" id="magic-key-input" placeholder="enter magic key to continue"/>
+                <button id="magic-key-submit">button</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- hidden variables - set by device listeners -->
+    <div id="div-data-store">
+        <div id="current-latitude">41.80922351939347</div>
+        <div id="current-longitude">-111.79667625695255</div>
+        <div id="device-orientation-alpha">0</div>
+        <div id="device-orientation-beta">0</div>
+        <div id="device-orientation-gamma">0</div>
+    </div>
+
+    <button id="debug-button">debug</button>
+
+    <script src="/static/js/script.js?v=1.0.40"></script>
+</body>
+</html>
