@@ -9,6 +9,10 @@ body {
     height: 100vh; /* Optional for full-page centering */
     margin: 0; /* Remove default body margin */
 }
+ #div-parent{
+    flex-direction:column;
+    justify-content: center;
+}
 #div-dist-container {
     width: 300px; /* Width of the circle */
     height: 300px; /* Height of the circle */

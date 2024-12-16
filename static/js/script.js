@@ -39,8 +39,8 @@ function updateDisplay(){
 
     //set direction offset
     msg = bearingToTarget.toFixed(0) + " | " + alphaNumber.toFixed(0);
-    document.getElementById("debug-message").innerText = bearingToTarget.toFixed(0);
-    document.getElementById("direction-offset").innerText = bearingToTarget.toFixed(0) + " | " + alphaNumber.toFixed(0);//directionOffset.toFixed(0);
+    document.getElementById("debug-message").innerText = msg;
+    document.getElementById("direction-offset").innerText = msg;//directionOffset.toFixed(0);
 
     /////////////////
 
