@@ -125,21 +125,21 @@ function startOrientationListening() {
 
         const alphaElement = document.getElementById("device-orientation-alpha");
         if (alphaElement) {
-            alphaElement.textContent = `${alpha != null ? alpha : "0"}`;
+            alphaElement.innertText = `${alpha != null ? alpha : "0"}`;
         } else {
             debug("Element 'device-orientation-alpha' not found.", 5);
         }
 
         const betaElement = document.getElementById("device-orientation-beta");
         if (betaElement) {
-            betaElement.textContent = `${beta != null ? beta : "0"}`;
+            betaElement.innerText = `${beta != null ? beta : "0"}`;
         } else {
             debug("Element 'device-orientation-beta' not found.", 5);
         }
 
         const gammaElement = document.getElementById("device-orientation-gamma");
         if (gammaElement) {
-            gammaElement.textContent = `${gamma != null ? gamma : "0"}`;
+            gammaElement.innerText= `${gamma != null ? gamma : "0"}`;
         } else {
             debug("Element 'device-orientation-gamma' not found.",5);
         }
