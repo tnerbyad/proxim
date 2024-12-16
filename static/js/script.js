@@ -37,7 +37,7 @@ function updateDisplay(){
     setArrowRotation(directionOffset);
 
     //set direction offset
-    document.getElementById("direction-offset").innerText = bearingToTarget.toFixed(0) + " | " + alphaElement.toFixed(0);//directionOffset.toFixed(0);
+    document.getElementById("direction-offset").innerText = bearingToTarget.toFixed(0) + " | " + alphaNumber.toFixed(0);//directionOffset.toFixed(0);
 
     /////////////////
 
