@@ -34,9 +34,12 @@ function updateDisplay(){
     const alphaElement = document.getElementById("device-orientation-alpha");
     const alphaNumber = parseFloat(alphaElement.innerText);
     const directionOffset = calculateDirectionOffset(bearingToTarget, alphaNumber);
+
     setArrowRotation(directionOffset);
 
     //set direction offset
+    msg = bearingToTarget.toFixed(0) + " | " + alphaNumber.toFixed(0);
+    alert(msg);
     document.getElementById("direction-offset").innerText = bearingToTarget.toFixed(0) + " | " + alphaNumber.toFixed(0);//directionOffset.toFixed(0);
 
     /////////////////
