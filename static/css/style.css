@@ -27,13 +27,18 @@ body {
     margin: 0; /* Removes default margin */
 }
 #request-permission-button {
+    width: 36px;
+    width:36px;
     font-size: 12px; /* Small font size */
-    background-color: white;
-    color: black;
-    border: 2px solid black;
-    padding: 5px 10px;
+    background-color: inherit;
+    color: grey;
+    border: none;
+    padding: 1px 1px;
     cursor: pointer;
     border-radius: 50%; /* Optional, for rounded corners */
+}
+#request-permission-button:hover svg path {
+    fill: green; /* Change to green when hovered */
 }
 #direction-offset
 {
@@ -52,9 +57,7 @@ body {
 #magic-key-input {
 
 }
-#magic-key-submit {
 
-}
 #div-data-store {
     display: none;
 }

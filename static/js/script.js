@@ -34,6 +34,7 @@ function updateDisplay(){
     const alphaElement = document.getElementById("device-orientation-alpha");
     const alphaNumber = parseFloat(alphaElement.innerText);
     const directionOffset = calculateDirectionOffset(bearingToTarget, alphaNumber);
+    setArrowRotation(directionOffset);
 
     //set direction offset
     document.getElementById("direction-offset").innerText = directionOffset.toFixed(0);
@@ -206,7 +207,10 @@ function startPositionWatching() {
 }
 
 document.querySelector("#request-permission-button").addEventListener("click", () => {
-    document.getElementById("request-permission-button").style.display = "none"; // Hides the button
+    ////don't hide the button.  Turn on updates.
+    //document.getElementById("request-permission-button").style.display = "none"; // Hides the button
+
+
     if (typeof DeviceOrientationEvent.requestPermission === "function") {
         debug ("requesting permission...", 5);
 
@@ -280,7 +284,7 @@ document.getElementById('magic-key-submit').addEventListener('click', function (
         .then((response) => response.json())
         .then((data) => {
             if (data.success) {
-                window.location.href = locationData.next; // Redirect to the next location
+                window.location.href = data.next; // Redirect to the server provided url
             } else {
                 alert(data.message); // Show error message
             }
@@ -288,20 +292,6 @@ document.getElementById('magic-key-submit').addEventListener('click', function (
         .catch((error) => {
             console.error('Error:', error);
         });
-    /*if (!userInputElement) {
-        alert("userInputElement is null!");
-        return;
-    }
-
-    const userValue = userInputElement.value; // Get the input value
-    console.log("Input value:", userValue); // Debugging
-    //alert("userValue=" + userValue + "| magicKey=" + locationData.magic_key);
-
-    if (userValue === locationData.magic_key) {
-        window.location.href = locationData.next;
-    } else {
-        alert(`${userValue} is the wrong clue! Try again.`);
-    }*/
 });
 
 document.getElementById('debug-button').addEventListener('click', function(){
@@ -312,3 +302,10 @@ document.getElementById('debug-button').addEventListener('click', function(){
     else
         debugDistance = 0;
 });
+
+
+//0 = arrow pointing up.  90 = arrow pointing to the right
+function setArrowRotation(angle) {
+    const svgElement = document.querySelector('#request-permission-button svg');
+    svgElement.style.transform = `rotate(${angle}deg)`;
+}

@@ -9,7 +9,7 @@
         "first_clue": "how high",
         "second_clue": "flyaway",
         "magic_key": "$11.33",
-        "fudge": 2,
+        "fudge": 0,
         "next": "dalawa"
     },
     {
@@ -22,7 +22,7 @@
         "first_clue": "clue 1Eat the kitchen sink",
         "second_clue": "clue two cost with tax - is magic box showing",
         "magic_key": "$11.33",
-        "fudge": 2,
+        "fudge": 0,
         "next": "tatlo"
     },
     {
@@ -35,7 +35,7 @@
         "first_clue": "You're getting warmer! Look for a playground",
         "second_clue": "Almost there! The magic word is hidden in plain sight.",
         "magic_key": "Hyde Park",
-        "fudge": 2,
+        "fudge": 0,
         "next": "apat"
     },
     {
@@ -48,7 +48,7 @@
         "first_clue": "You're near a famous university.",
         "second_clue": "Check near the library.",
         "magic_key": "berkeley",
-        "fudge": 2,
+        "fudge": 0,
         "next": ""
     }
 ]

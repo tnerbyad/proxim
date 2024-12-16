@@ -36,7 +36,11 @@
             <div id="distance-to-target"></div>
             <div id="direction-offset"></div>
             <div>
-                <button id="request-permission-button">?</button>
+                <button id="request-permission-button">
+                    <svg  viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6 10V2M6 2L3 5M6 2L9 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                </button>
             </div>
         </div>
         <!-- Clues-->
@@ -44,7 +48,7 @@
             <div id="clue-display">some clue</div>
             <div id="magic-display">
                 <input type="text" id="magic-key-input" placeholder="enter magic key to continue"/>
-                <button id="magic-key-submit">button</button>
+                <button id="magic-key-submit">go</button>
             </div>
         </div>
     </div>
@@ -60,6 +64,6 @@
 
     <button id="debug-button">debug</button>
 
-    <script src="/static/js/script.js?v=1.0.40"></script>
+    <script src="/static/js/script.js?v=1.0.43"></script>
 </body>
 </html>
