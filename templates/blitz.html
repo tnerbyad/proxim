@@ -55,19 +55,18 @@
 
     <!-- hidden variables - set by device listeners -->
     <div id="div-data-store">
+        <button id="debug-button">debug</button>
         <div id="current-latitude">41.80922351939347</div>
         <div id="current-longitude">-111.79667625695255</div>
         <div id="device-orientation-alpha">0</div>
         <div id="device-orientation-beta">0</div>
         <div id="device-orientation-gamma">0</div>
-    </div>
-
-    <div id="div-debug">
-        <button id="debug-button">debug</button>
+        <div id="magic-key">{{ location.magic_key }}</div>
+        <div id="locatin-description">{{ location.description }}</div>
         <div id="debug-message"></div>
     </div>
 
 
-    <script src="/static/js/script.js?v=1.0.47"></script>
+    <script src="/static/js/script.js?v=1.0.49"></script>
 </body>
 </html>

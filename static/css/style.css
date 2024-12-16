@@ -57,7 +57,6 @@ body {
 #magic-key-input {
 
 }
-
 #div-data-store {
-    display: none;
+    background-color: grey;/*display: none;
 }

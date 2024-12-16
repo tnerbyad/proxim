@@ -39,7 +39,7 @@ function updateDisplay(){
 
     //set direction offset
     msg = bearingToTarget.toFixed(0) + " | " + alphaNumber.toFixed(0);
-    alert(msg);
+    document.getElementById("div-debug").innerText = bearingToTarget.toFixed(0);
     document.getElementById("direction-offset").innerText = bearingToTarget.toFixed(0) + " | " + alphaNumber.toFixed(0);//directionOffset.toFixed(0);
 
     /////////////////
