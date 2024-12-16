@@ -1,5 +1,5 @@
 let userVisited = [];
-const proximityCheckInterval = 1000; // Check every 1 second
+const proximityCheckInterval = 3000; // Check every 1 second
 let watchId = null;
 let debugDistance = 0;
 
