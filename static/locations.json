@@ -1,14 +1,14 @@
 [
     {
         "name": "isa",
-        "description": "pigglies",
-        "lat": 41.80912095171537,
-        "lon": -111.79729503176156,
+        "description": "pond",
+        "lat": 41.76285299055764,
+        "lon": -111.82093531399865,
         "proximity1": 50,
         "proximity2": 10,
-        "first_clue": "how high",
+        "first_clue": "where the ducks roam",
         "second_clue": "flyaway",
-        "magic_key": "$11.33",
+        "magic_key": "quack",
         "fudge": 0,
         "next": "dalawa"
     },
