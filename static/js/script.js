@@ -105,7 +105,7 @@ function calculateDirectionOffset(bearing, alpha){
     //bearing is the direction from current location to target location
     //alpha is the direction the phone is pointing
     if (!isNaN(bearing) && !isNaN(alpha)) {
-        return (360-(alpha - bearing));
+        return (bearing - alpha + 360);
     } else if (!isNaN(bearing)) {
         return(bearing);
     } else if (!isNaN(alpha)) {
